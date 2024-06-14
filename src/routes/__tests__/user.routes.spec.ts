@@ -32,4 +32,17 @@ describe("User routes", () => {
         const response = await supertest(App).post(url).send(user)
         expect(response.status).toEqual(201);
     });
+
+
+    it.only("should not create an user with an empty password", async () => {
+        const user = {
+            name: "Garibaldo",
+            email: `vilasesamo-${hash()}@gmail.com`,
+            password: ""
+        }
+
+        const url = "/users"
+        const response = await supertest(App).post(url).send(user)
+        expect(response.status).toEqual(201);
+    });
 })
