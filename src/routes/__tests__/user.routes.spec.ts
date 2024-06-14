@@ -17,7 +17,19 @@ describe("User routes", () => {
 
         const url = "/users"
         const response = await supertest(App).post(url).send(user)
-        console.log(response.body)
+
+        expect(response.status).toEqual(201);
+    });
+
+    it.skip("should not create an user with an empty email", async () => {
+        const user = {
+            name: "Garibaldo",
+            email: "",
+            password: "garibaldinho123"
+        }
+
+        const url = "/users"
+        const response = await supertest(App).post(url).send(user)
         expect(response.status).toEqual(201);
     });
 })
