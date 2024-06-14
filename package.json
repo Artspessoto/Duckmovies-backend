@@ -24,6 +24,7 @@
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "supertest": "^7.0.0"
   }
 }
