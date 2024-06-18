@@ -1,23 +1,28 @@
 const knex = require("../database/knex");
 const AppError = require("../utils/AppError");
+const z = require("zod");
+
+const CreateMovieNotePayload = z.object({
+  title: z.string().min(1, "Título é obrigatório").max(255, "Título não pode exceder 255 caracteres"),
+  description: z.string().optional(),
+  rating: z.number().min(1, "Avaliação do filme deve ser entre 1 e 5").max(5, "Avaliação do filme deve ser entre 1 e 5"),
+  tags: z.array(z.string())
+})
 
 class Movie_notesController {
   async create(req, res) {
     const { title, description, rating, tags } = req.body;
     const user_id = req.user.id;
-    const isNotInteger = !Number.isInteger(rating) || rating < 1 || rating > 5;
 
-    if (!title) throw new AppError("Insira um título para o filme");
-    if (title.length > 255)
-      throw new AppError("Título do filme não pode ultrapassar 255 caracteres");
+    const { success, error } = CreateMovieNotePayload.safeParse({
+      title,
+      description,
+      rating,
+      tags,
+    });
 
-    if (typeof rating !== "number" || isNotInteger) {
-      throw new AppError(
-        "A avaliação do filme deve ser um número inteiro entre 1 e 5"
-      );
-    }
-
-    if (!rating) throw new AppError("Avaliação do filme é obrigatória");
+    if(!success) 
+      throw new AppError(error.errors.map((err) => err.message.join("\n")))
 
     const [movieNotes_id] = await knex("movie_notes").insert({
       title,

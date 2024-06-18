@@ -1,6 +1,6 @@
 const knex = require("../database/knex");
 
-class Movie_tagsController {
+class MovieTagsController {
   async index(req, res) {
     const user_id = req.user.id;
 
@@ -10,4 +10,4 @@ class Movie_tagsController {
   }
 }
 
-module.exports = Movie_tagsController;
+module.exports = MovieTagsController;

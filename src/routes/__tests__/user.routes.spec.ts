@@ -92,7 +92,7 @@ describe("User routes", () => {
     });
   });
 
-  it("should update an user", async () => {
+  it("should update an user name", async () => {
     const user = {
       name: "Garibaldo Teste",
       email: "vilasesamo-663zls@gmail.com",
