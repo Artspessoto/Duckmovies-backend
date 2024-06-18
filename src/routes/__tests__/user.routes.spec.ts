@@ -91,4 +91,28 @@ describe("User routes", () => {
       message: "JWT Token inválido",
     });
   });
+
+  it("should update an user", async () => {
+    const user = {
+      name: "Garibaldo Teste",
+      email: "vilasesamo-663zls@gmail.com",
+      old_password: "garibaldinho123",
+      password: "garibaldinho123",
+    };
+
+    const urlToken = "/sessions";
+    const authResponse = await supertest(App)
+      .post(urlToken)
+      .send({ email: user.email, password: user.password });
+
+    const userToken = authResponse.body.token;
+
+    const url = "/users";
+    const response = await supertest(App)
+      .put(url)
+      .set("Authorization", `Bearer ${userToken}`)
+      .send(user);
+    
+      expect(response.status).toEqual(200);
+  });
 });
