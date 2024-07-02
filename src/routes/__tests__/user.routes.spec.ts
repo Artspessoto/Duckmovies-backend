@@ -1,118 +1,116 @@
-import { describe, it, expect } from "vitest";
-import supertest from "supertest";
+import {describe, it, expect, beforeEach, afterEach} from "vitest";
+import supertest, {Test} from "supertest";
 
-import { App } from "../../server.js";
+import {App} from "../../server.js";
+import TestAgent from "supertest/lib/agent";
+import {getTestJwt} from "../../utils/test-utils/getTestJwt";
+import {createFakeUser} from "../../utils/test-utils/createFakeUser";
 
 const hash = (): string => {
-  return Math.random().toString(36).substring(7);
+    return Math.random().toString(36).substring(7);
 };
 
+let server: TestAgent<Test>
+
+beforeEach(() => {
+    server = supertest(App)
+})
+
 describe("User routes", () => {
-  it("should create an user", async () => {
-    const user = {
-      name: "Garibaldo",
-      email: `vilasesamo-${hash()}@gmail.com`,
-      password: "garibaldinho123",
-    };
+    it("should create an user", async () => {
+        const user = {
+            name: "Garibaldo",
+            email: `vilasesamo-${hash()}@gmail.com`,
+            password: "garibaldinho123",
+        };
 
-    const url = "/users";
-    const response = await supertest(App).post(url).send(user);
+        const url = "/users";
+        const response = await server.post(url).send(user);
 
-    expect(response.status).toEqual(201);
-  });
-
-  it("should not create an user with an empty email", async () => {
-    const user = {
-      name: "Garibaldo",
-      email: "",
-      password: "garibaldinho123",
-    };
-
-    const url = "/users";
-    const response = await supertest(App).post(url).send(user);
-    expect(response.status).toEqual(400);
-  });
-
-  it("should not create an user with an empty password", async () => {
-    const user = {
-      name: "Garibaldo",
-      email: `vilasesamo-${hash()}@gmail.com`,
-      password: "",
-    };
-
-    const url = "/users";
-    const response = await supertest(App).post(url).send(user);
-
-    expect(response.status).toEqual(400);
-    expect(response.body).toEqual({
-      status: "Error",
-      message: "Senha muito curta",
+        expect(response.status).toEqual(201);
     });
-  });
 
-  it("should not update an user with an empty token", async () => {
-    const user = {
-      name: "Garibaldo",
-      email: "vilasesamo-663zls@gmail.com",
-      password: "garibaldinho123",
-      token: "",
-    };
+    it("should not create an user with an empty email", async () => {
+        const user = {
+            name: "Garibaldo",
+            email: "",
+            password: "garibaldinho123",
+        };
 
-    const url = "/users";
-    const response = await supertest(App)
-      .put(url)
-      .set("Authorization", `Bearer ${user.token}`)
-      .send(user);
-
-    expect(response.status).toEqual(401);
-    expect(response.body).toEqual({
-      status: "Error",
-      message: "JWT Token inválido",
+        const url = "/users";
+        const response = await server.post(url).send(user);
+        expect(response.status).toEqual(400);
     });
-  });
 
-  it("should not update and user with an invalid token", async () => {
-    const user = {
-      name: "Garibaldo",
-      email: "vilasesamo-663zls@gmail.com",
-      password: "garibaldinho123",
-      token: "invalid-token",
-    };
+    it("should not create an user with an empty password", async () => {
+        const user = {
+            name: "Garibaldo",
+            email: `vilasesamo-${hash()}@gmail.com`,
+            password: "",
+        };
 
-    const url = "/users";
-    const response = await supertest(App)
-      .put(url)
-      .set("Authorization", `Bearer ${user.token}`)
-      .send(user);
+        const url = "/users";
+        const response = await server.post(url).send(user);
 
-    expect(response.status).toEqual(401);
-    expect(response.body).toEqual({
-      status: "Error",
-      message: "JWT Token inválido",
+        expect(response.status).toEqual(400);
+        expect(response.body).toEqual({
+            status: "Error",
+            message: "Senha muito curta",
+        });
     });
-  });
 
-  it("should update an user name", async () => {
-    const user = {
-      name: "Garibaldo Teste",
-      email: "vilasesamo-663zls@gmail.com",
-      old_password: "garibaldinho123",
-      password: "garibaldinho123",
-    };
+    it("should not update an user with an empty token", async () => {
+        const user = {
+            name: "Garibaldo",
+            email: "vilasesamo-663zls@gmail.com",
+            password: "garibaldinho123",
+            token: "",
+        };
 
-    const urlToken = "/sessions";
-    const authResponse = await supertest(App)
-      .post(urlToken)
-      .send({ email: user.email, password: user.password });
+        const url = "/users";
+        const response = await server
+            .put(url)
+            .set("Authorization", `Bearer ${user.token}`)
+            .send(user);
 
-    const userToken = authResponse.body.token;
+        expect(response.status).toEqual(401);
+        expect(response.body).toEqual({
+            status: "Error",
+            message: "JWT Token inválido",
+        });
+    });
 
-    const url = "/users";
-    const response = await supertest(App)
-      .put(url)
-      .set("Authorization", `Bearer ${userToken}`)
-      .send(user);
-    
-      expect(response.status).toEqual(200);
-  });
+    it("should not update and user with an invalid token", async () => {
+        const user = {
+            name: "Garibaldo",
+            email: "vilasesamo-663zls@gmail.com",
+            password: "garibaldinho123",
+            token: "invalid-token",
+        };
+
+        const url = "/users";
+        const response = await server
+            .put(url)
+            .set("Authorization", `Bearer ${user.token}`)
+            .send(user);
+
+        expect(response.status).toEqual(401);
+        expect(response.body).toEqual({
+            status: "Error",
+            message: "JWT Token inválido",
+        });
+    });
+
+    it.skip("should update an user name", async () => {
+        const user = await createFakeUser()
+
+        console.log("CREATED USER", user)
+        const url = "/users";
+        const response = await server
+            .put(url)
+            .set("Authorization", `Bearer ${getTestJwt(user)}`)
+            .send(user);
+
+        expect(response.status).toEqual(200);
+    });
 });

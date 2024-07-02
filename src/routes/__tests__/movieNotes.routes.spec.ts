@@ -7,7 +7,7 @@ import {createFakeUser} from "../../utils/test-utils/createFakeUser";
 
 describe("MovieNotes routes", () => {
     it("should create an movie_note", async () => {
-        const userData = createFakeUser();
+        const userData = await createFakeUser();
 
         const movieNote = {
             title: "Pânico",
