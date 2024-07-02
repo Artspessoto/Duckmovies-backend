@@ -1,4 +1,5 @@
-require("dotenv").config({ path: "prod.env" });
+require("dotenv").config()
+
 
 module.exports = {
   jwt: {
