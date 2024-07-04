@@ -1,11 +1,14 @@
 import authConfig from "../../configs/auth.js";
-import {sign} from 'jsonwebtoken';
+import { sign } from "jsonwebtoken";
+import knex from "../../database/knex";
 
-export const getTestJwt = (user): string => {
-    const {secret, expiresIn} = authConfig.jwt;
+export const getTestJwt = async (user): Promise<string> => {
+  const { secret, expiresIn } = authConfig.jwt;
 
-    return sign({}, secret, {
-        subject: String(user.id),
-        expiresIn,
-    })
-}
+  const userData = await knex("users").where({ email: user.email }).first();
+
+  return sign({}, secret, {
+    subject: String(userData.id),
+    expiresIn,
+  });
+};

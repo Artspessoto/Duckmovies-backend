@@ -1,5 +1,5 @@
 import {describe, it, vi, expect} from "vitest";
-import {fileFilter} from "../fileFilter";
+import fileFilter from "../fileFilter";
 
 
 describe("File Filter", () => {
@@ -16,4 +16,15 @@ describe("File Filter", () => {
             "statusCode": 401,
         })
     });
+
+    it('should be valid for a .jpg file', () => {
+        const spy = vi.fn()
+        const file = {
+            originalname: 'teste.jpg'
+        }
+
+        fileFilter(null, file, spy);
+
+        expect(spy).toHaveBeenCalledWith(null, true)
+    })
 })
