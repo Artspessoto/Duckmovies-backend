@@ -1,4 +1,5 @@
-require("dotenv").config({ path: "prod.env" })
+const env = process.env.NODE_ENV === "test" ? ".env" : "prod.env";
+require("dotenv").config({ path: env })
 
 module.exports = {
   jwt: {
