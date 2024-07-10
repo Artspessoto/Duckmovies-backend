@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/server.js",
+    "start": "node ./src/index.ts",
     "dev": "tsx watch ./src/index.ts",
     "migrate": "knex migrate:latest",
-    "test": "vitest"
+    "test": "vitest",
+    "type": "module"
   },
   "keywords": [],
   "author": "",

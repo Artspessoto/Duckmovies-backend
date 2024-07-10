@@ -28,9 +28,7 @@ describe("User Avatar", () => {
     const response = await server
       .patch(url)
       .set("Authorization", `Bearer ${token}`)
-      // .attach("avatar", filePath);
-
-    console.log(response.body)
+      .attach("avatar", filePath);
 
     expect(response.status).toEqual(200);
   });

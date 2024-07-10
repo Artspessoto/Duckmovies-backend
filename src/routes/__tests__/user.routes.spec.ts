@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import supertest, { Test } from "supertest";
 
 import { App } from "../../server.js";
@@ -18,9 +18,9 @@ beforeEach(() => {
 describe("User routes", () => {
   it("should create an user", async () => {
     const user = {
-      name: "Garibaldo",
-      email: `vilasesamo-${hash()}@gmail.com`,
-      password: "garibaldinho123",
+      name: `Teste ${hash()}`,
+      email: `teste-${hash()}@gmail.com`,
+      password: "1234567",
     };
 
     const url = "/users";
@@ -31,9 +31,9 @@ describe("User routes", () => {
 
   it("should not create an user with an empty email", async () => {
     const user = {
-      name: "Garibaldo",
+      name: "Teste",
       email: "",
-      password: "garibaldinho123",
+      password: "1234567",
     };
 
     const url = "/users";
@@ -43,8 +43,8 @@ describe("User routes", () => {
 
   it("should not create an user with an empty password", async () => {
     const user = {
-      name: "Garibaldo",
-      email: `vilasesamo-${hash()}@gmail.com`,
+      name: "Teste",
+      email: `teste-${hash()}@gmail.com`,
       password: "",
     };
 
@@ -60,9 +60,9 @@ describe("User routes", () => {
 
   it("should not update an user with an empty token", async () => {
     const user = {
-      name: "Garibaldo",
+      name: "Teste",
       email: `vilasesamo-${hash()}@gmail.com`,
-      password: "garibaldinho123",
+      password: "1234567",
       token: "",
     };
 
@@ -81,9 +81,9 @@ describe("User routes", () => {
 
   it("should not update and user with an invalid token", async () => {
     const user = {
-      name: "Garibaldo",
-      email: `vilasesamo-${hash()}@gmail.com`,
-      password: "garibaldinho123",
+      name: "Teste",
+      email: `teste-${hash()}@gmail.com`,
+      password: "1234567",
       token: "invalid-token",
     };
 

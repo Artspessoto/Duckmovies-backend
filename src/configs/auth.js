@@ -1,4 +1,4 @@
-const env = process.env.NODE_ENV === "test" ? ".env" : "prod.env";
+const env = process.env.NODE_ENV === "test" ? ".env.example" : "prod.env";
 require("dotenv").config({ path: env })
 
 module.exports = {
