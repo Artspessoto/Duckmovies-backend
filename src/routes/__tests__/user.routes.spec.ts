@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import supertest, { Test } from "supertest";
 
-import { App } from "../../server.js";
+// import { App } from "../../server.js";
+const App = require("../../server.js");
 import TestAgent from "supertest/lib/agent";
 import { getTestJwt } from "../../utils/test-utils/getTestJwt";
 

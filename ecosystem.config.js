@@ -1,8 +1,9 @@
 module.exports = {
   apps : [{
     name: "app",
-    script: "./app.js",
-    instances: "max",
+    script: "./src/index.js",
+    interpreter: "node",
+    instances: 1,
     env: {
       NODE_ENV: "development",
     },

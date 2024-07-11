@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import supertest from "supertest";
 
-import { App } from "../../server.js";
+// import { App } from "../../server.js";
+const App = require("../../server.js");
 import { getTestJwt } from "../../utils/test-utils/getTestJwt";
 
 describe("MovieNotes routes", () => {
