@@ -5,6 +5,7 @@ const uploadConfig = require("./configs/upload");
 
 const express = require("express");
 const routes = require("./routes");
+const swaggerUi = require("swagger-ui-express");
 
 const app = express();
 app.use(express.json());
