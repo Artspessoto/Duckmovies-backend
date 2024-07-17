@@ -1,1 +1,149 @@
-{}
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Duckmovies",
+        "description": "Essa API tem como objetivo o gerenciamento de anotações e categorias de filmes feita por usuários autenticados.",
+        "contact": {
+            "email": "artspessoto@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3333/",
+            "description": "API para testes"
+        },
+        {
+            "url": "https://duckmovies-backend.onrender.com",
+            "description": "API de produção"
+        }
+    ],
+    "host": "https://duckmovies-backend.onrender.com",
+    "paths": {
+        "/users": {
+            "post": {
+                "summary": "Cadastro de usuários",
+                "description": "Cria um novo usuário a partir do campos validados name, email e password, que são necessários ao corpo da requisição, com a senha sendo encriptada de forma segura.",
+                "tags": [
+                    "Users"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            },
+                            "examples": {
+                                "user": {
+                                    "value": {
+                                        "name": "Arthur",
+                                        "email": "arthur@email.com",
+                                        "password": "789456"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Este e-mail já está em uso."
+                    },
+                    "201": {
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "summary": "Atualiza dados referentes ao usuário",
+                "description": "Atualiza dados referentes ao usuário, sendo necessário ser um usuário autenticado para realizar as alterações. Para atualizar seus dados é necessário seu name, email, old_password e password.",
+                "tags": [
+                    "Users"
+                ]
+            }
+        },
+        "/sessions": {
+            "post": {
+                "summary": "Cria uma sessão para o usuário",
+                "description": "Gera um token para um usuário já cadastrado com tempo de expiração de 1 dia e com a chave secreta, que é usada para verificar e assinar o token, garantindo autenticidade da sessão do usuário na aplicação. Para gerar esse token é necessário que o usuário envie no corpo da requisição os dados de email e password.",
+                "tags": [
+                    "Sessions"
+                ]
+            }
+        },
+        "/movie_notes": {
+            "post": {
+                "summary": "Cria anotações relacionadas ao filme feitas por um usuário autenticado",
+                "description": "Cria anotações relacionadas ao filme a partir da validação de seu título, descrição, classifição e tags (categorias) relacionadas a ele armazenando a anotação no banco de dados na tabela movie_notes, além de também associar tags informadas à anotação na tabela movie_tags.",
+                "tags": [
+                    "Movie_notes"
+                ]
+            },
+            "get": {
+                "summary": "Lista as notas sobre os filmes com filtros no título e tags",
+                "description": "Lista notas com filtros a partir do título e das tags passadas na URL como parâmetros, chamados de parâmetros de consulta (Query Params).",
+                "tags": [
+                    "Movie_notes"
+                ]
+            }
+        },
+        "/movie_notes/:id": {
+            "get": {
+                "summary": "Retorna dados das anotações de filmes pelo identificador",
+                "description": "Recupera anotações específicas pelo identificador da anotação do filme passado por parâmetro (Route Params). A requisição vai retornar a nota do filme (título, descrição, classificação e as categorias criadas) se for bem sucedida.",
+                "tags": [
+                    "Movie_notes"
+                ]
+            },
+            "delete": {
+                "summary": "Deleta a nota do filme a partir do seu identificador",
+                "description": "A requisição de delete vai apagar a nota do filme a partir do ID passado no parâmetro da rota, deletando também em cascata o que for vinculado a esse ID na tabela movie_tags",
+                "tags": [
+                    "Movie_notes"
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserUpdate": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "old_password": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
