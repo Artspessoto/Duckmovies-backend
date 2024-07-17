@@ -6,9 +6,12 @@ const uploadConfig = require("./configs/upload");
 const express = require("express");
 const routes = require("./routes");
 const swaggerUi = require("swagger-ui-express");
+const swaggerDocs = require("./swagger.json");
 
 const app = express();
 app.use(express.json());
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup())
 
 app.use("/files", express.static(uploadConfig.UPLOADS_FOLDER));
 
