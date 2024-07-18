@@ -50,7 +50,7 @@
                         "description": "Este e-mail já está em uso."
                     },
                     "201": {
-                        "description": ""
+                        "description": "Ok"
                     }
                 }
             },
@@ -141,7 +141,31 @@
                 "description": "Cria anotações relacionadas ao filme a partir da validação de seu título, descrição, classifição e tags (categorias) relacionadas a ele armazenando a anotação no banco de dados na tabela movie_notes, além de também associar tags informadas à anotação na tabela movie_tags.",
                 "tags": [
                     "Movie_notes"
-                ]
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MovieNote"
+                            },
+                            "examples": {
+                                "movie_note": {
+                                    "value": {
+                                        "title": "Sharknado",
+                                        "description": "Os sobreviventes do primeiro tornado de tubarões são obrigados a se reunir mais uma vez para combater uma nova tempestade de tubarões, que dessa vez ameaça Nova York.",
+                                        "rating": 5,
+                                        "tags": ["Terror", "Ação", "Comédia"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ok"
+                    }
+                }
             },
             "get": {
                 "summary": "Lista as notas sobre os filmes com filtros no título e tags",
@@ -209,6 +233,26 @@
                     },
                     "old_password": {
                         "type": "string"
+                    }
+                }
+            },
+            "MovieNote": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "rating": {
+                        "type": "integer"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 }
             },

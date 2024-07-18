@@ -11,7 +11,7 @@ const swaggerDocs = require("./swagger.json");
 const app = express();
 app.use(express.json());
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 app.use("/files", express.static(uploadConfig.UPLOADS_FOLDER));
 
