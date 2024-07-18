@@ -142,6 +142,11 @@
                 "tags": [
                     "Movie_notes"
                 ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -172,6 +177,11 @@
                 "description": "Lista notas com filtros a partir do título e das tags passadas na URL como parâmetros, chamados de parâmetros de consulta (Query Params).",
                 "tags": [
                     "Movie_notes"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
                 ]
             }
         },
@@ -181,6 +191,11 @@
                 "description": "Recupera anotações específicas pelo identificador da anotação do filme passado por parâmetro (Route Params). A requisição vai retornar a nota do filme (título, descrição, classificação e as categorias criadas) se for bem sucedida.",
                 "tags": [
                     "Movie_notes"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
                 ]
             },
             "delete": {
@@ -188,6 +203,11 @@
                 "description": "A requisição de delete vai apagar a nota do filme a partir do ID passado no parâmetro da rota, deletando também em cascata o que for vinculado a esse ID na tabela movie_tags",
                 "tags": [
                     "Movie_notes"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
                 ]
             }
         }
