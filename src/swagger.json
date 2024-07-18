@@ -173,6 +173,9 @@
                 "responses": {
                     "201": {
                         "description": "Ok"
+                    },
+                    "401": {
+                        "description": "JWT Token não informado"
                     }
                 }
             },
