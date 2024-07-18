@@ -81,7 +81,7 @@
                                         "name": "Arthur Martins",
                                         "email": "arthur@email.com",
                                         "password": "123456",
-                                        "old_password": "789456"
+                                        "old_password": "123456"
                                     }
                                 }
                             }
@@ -189,6 +189,18 @@
                     {
                         "bearerAuth": []
                     }
+                ],
+                "parameters": [
+                    { 
+                        "name": "Sharknado",
+                        "in": "query",
+                        "description": "Título do filme para busca"
+                    },
+                    {
+                        "name": "Terror, Comédia",
+                        "in": "query",
+                        "description": "Categoria do filme para busca"
+                    }
                 ]
             }
         },
@@ -203,6 +215,13 @@
                     {
                         "bearerAuth": []
                     }
+                ],
+                "parameters": [
+                    {
+                        "name": "1",
+                        "in": "params",
+                        "description": "Identificador da nota do filme para busca"
+                    }
                 ]
             },
             "delete": {
@@ -214,6 +233,13 @@
                 "security": [
                     {
                         "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "1",
+                        "in": "params",
+                        "description": "Identificador da nota do filme para exclusão"
                     }
                 ]
             }
@@ -277,21 +303,26 @@
             },
             "MovieNote": {
                 "type": "object",
+                "required": ["title", "rating", "tags"],
                 "properties": {
                     "title": {
-                        "type": "string"
+                        "type": "string",
+                        "required": "true"
                     },
                     "description": {
                         "type": "string"
                     },
                     "rating": {
-                        "type": "integer"
+                        "type": "integer",
+                        "required": "true"
                     },
                     "tags": {
                         "type": "array",
                         "items": {
-                            "type": "string"
-                        }
+                            "type": "string",
+                            "required": "true"
+                        },
+                        "required": "true"
                     }
                 }
             },
