@@ -210,6 +210,18 @@
                     }
                 ]
             }
+        },
+        "/movie_tags": {
+            "get": {
+                "summary": "Retorna as tags (categorias de filmes) vinculadas ao usuário autenticado",
+                "description": "Recupera as tags vinculadas ao usuário com sessão realizada que fez a solicitação",
+                "tags": [ "Movie_tags" ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
