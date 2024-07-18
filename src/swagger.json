@@ -19,6 +19,10 @@
         }
     ],
     "host": "https://duckmovies-backend.onrender.com",
+    "externalDocs": {
+        "description": "Mais sobre a construção da API",
+        "url": "https://sleepy-lion-12c.notion.site/DuckMovies-508dedb0c2be4076be7a69d7386d76dc"
+    },
     "paths": {
         "/users": {
             "post": {
