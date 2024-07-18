@@ -59,7 +59,46 @@
                 "description": "Atualiza dados referentes ao usuário, sendo necessário ser um usuário autenticado para realizar as alterações. Para atualizar seus dados é necessário seu name, email, old_password e password.",
                 "tags": [
                     "Users"
-                ]
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdate"
+                            },
+                            "examples": {
+                                "user": {
+                                    "value": {
+                                        "name": "Arthur Martins",
+                                        "email": "arthur@email.com",
+                                        "password": "123456",
+                                        "old_password": "789456"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "400": {
+                        "oneOf": [
+                            {"$ref": "#/components/responses/InvalidOldPasswordError"}, 
+                            {"$ref": "#/components/responses/EmailInUseError"},
+                            {"$ref": "#/components/responses/MissingOldPasswordError"} 
+                        ]
+                    },
+                    "200": {
+                        "description": "Usuário atualizado com sucesso"
+                    }
+                }
             }
         },
         "/sessions": {
@@ -68,7 +107,32 @@
                 "description": "Gera um token para um usuário já cadastrado com tempo de expiração de 1 dia e com a chave secreta, que é usada para verificar e assinar o token, garantindo autenticidade da sessão do usuário na aplicação. Para gerar esse token é necessário que o usuário envie no corpo da requisição os dados de email e password.",
                 "tags": [
                     "Sessions"
-                ]
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserLogin"
+                            },
+                            "examples": {
+                                "user": {
+                                    "value": {
+                                        "email": "arthur@email.com",
+                                        "password": "123456"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "E-mail e/ou senha incorreta"
+                    },
+                    "200": {
+                        "description": "Ok"
+                    }
+                }
             }
         },
         "/movie_notes": {
@@ -120,6 +184,17 @@
                     }
                 }
             },
+            "UserLogin": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
             "UserUpdate": {
                 "type": "object",
                 "properties": {
@@ -134,6 +209,69 @@
                     },
                     "old_password": {
                         "type": "string"
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type":"string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "responses": {
+            "NotFound": {
+                "description": "Usuário não encontrado",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "JWT Token inválido",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "MissingOldPasswordError": {
+                "description": "Você precisa informar a senha antiga para definir a nova senha",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "InvalidOldPasswordError":{
+                "description": "A senha antiga não confere",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "EmailInUseError": {
+                "description": "Este e-mail já está em uso",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
                     }
                 }
             }
