@@ -4,6 +4,9 @@
 * 💻 Passo a passo da construção da [API](https://sleepy-lion-12c.notion.site/DuckMovies-508dedb0c2be4076be7a69d7386d76dc)
 * 📚 Documentação com Swagger [DuckMovies](https://duckmovies-backend.onrender.com/api-docs)
 
+## Licença
+* Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](./LICENSE) para detalhes.
+
 ## Typescript
 
 ### 1. Install typescript

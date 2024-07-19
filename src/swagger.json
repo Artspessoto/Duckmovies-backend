@@ -2,11 +2,15 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Duckmovies",
-        "description": "Essa API tem como objetivo o gerenciamento de anotações e categorias de filmes feita por usuários autenticados.",
+        "description": "Esta API tem como objetivo o gerenciamento de anotações e categorias de filmes feita por usuários autenticados. Para autenticar-se, acesse o endpoint `/sessions` e inicie uma sessão após cadastrar um usuário em `/users`.",
         "contact": {
             "email": "artspessoto@gmail.com"
         },
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
     },
     "servers": [
         {
@@ -18,7 +22,6 @@
             "description": "API de produção"
         }
     ],
-    "host": "https://duckmovies-backend.onrender.com",
     "externalDocs": {
         "description": "Mais sobre a construção da API",
         "url": "https://sleepy-lion-12c.notion.site/DuckMovies-508dedb0c2be4076be7a69d7386d76dc"
