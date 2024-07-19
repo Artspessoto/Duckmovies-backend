@@ -35,14 +35,14 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/User"
+                                "$ref": "#/components/schemas/UserRegister"
                             },
                             "examples": {
                                 "user": {
                                     "value": {
                                         "name": "Arthur",
                                         "email": "arthur@email.com",
-                                        "password": "789456"
+                                        "password": "123456"
                                     }
                                 }
                             }
@@ -94,9 +94,15 @@
                     },
                     "400": {
                         "oneOf": [
-                            {"$ref": "#/components/responses/InvalidOldPasswordError"}, 
-                            {"$ref": "#/components/responses/EmailInUseError"},
-                            {"$ref": "#/components/responses/MissingOldPasswordError"} 
+                            {
+                                "$ref": "#/components/responses/InvalidOldPasswordError"
+                            },
+                            {
+                                "$ref": "#/components/responses/EmailInUseError"
+                            },
+                            {
+                                "$ref": "#/components/responses/MissingOldPasswordError"
+                            }
                         ]
                     },
                     "200": {
@@ -134,7 +140,15 @@
                         "description": "E-mail e/ou senha incorreta"
                     },
                     "200": {
-                        "description": "Ok"
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/LoggedUser"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -155,7 +169,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/MovieNote"
+                                "$ref": "#/components/schemas/MovieNoteRegister"
                             },
                             "examples": {
                                 "movie_note": {
@@ -163,7 +177,11 @@
                                         "title": "Sharknado",
                                         "description": "Os sobreviventes do primeiro tornado de tubarões são obrigados a se reunir mais uma vez para combater uma nova tempestade de tubarões, que dessa vez ameaça Nova York.",
                                         "rating": 5,
-                                        "tags": ["Terror", "Ação", "Comédia"]
+                                        "tags": [
+                                            "Terror",
+                                            "Ação",
+                                            "Comédia"
+                                        ]
                                     }
                                 }
                             }
@@ -172,7 +190,15 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Ok"
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "JWT Token não informado"
@@ -191,7 +217,7 @@
                     }
                 ],
                 "parameters": [
-                    { 
+                    {
                         "name": "Sharknado",
                         "in": "query",
                         "description": "Título do filme para busca"
@@ -218,11 +244,27 @@
                 ],
                 "parameters": [
                     {
-                        "name": "1",
+                        "name": 1,
                         "in": "params",
                         "description": "Identificador da nota do filme para busca"
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MovieNoteWithTags"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "JWT Token não informado"
+                    }
+                }
             },
             "delete": {
                 "summary": "Deleta a nota do filme a partir do seu identificador",
@@ -237,29 +279,82 @@
                 ],
                 "parameters": [
                     {
-                        "name": "1",
+                        "name": 1,
                         "in": "params",
                         "description": "Identificador da nota do filme para exclusão"
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    }
+                }
             }
         },
         "/movie_tags": {
             "get": {
                 "summary": "Retorna as tags (categorias de filmes) vinculadas ao usuário autenticado",
                 "description": "Recupera as tags vinculadas ao usuário com sessão realizada que fez a solicitação",
-                "tags": [ "Movie_tags" ],
+                "tags": [
+                    "Movie_tags"
+                ],
                 "security": [
                     {
                         "bearerAuth": []
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MovieTags"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "JWT Token não informado"
+                    }
+                }
             }
         }
     },
     "components": {
         "schemas": {
-            "User": {
+            "FullUserDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "UserRegister": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -301,9 +396,24 @@
                     }
                 }
             },
-            "MovieNote": {
+            "LoggedUser": {
                 "type": "object",
-                "required": ["title", "rating", "tags"],
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/FullUserDataResponse"
+                    },
+                    "token": {
+                        "type": "string"
+                    }
+                }
+            },
+            "MovieNoteRegister": {
+                "type": "object",
+                "required": [
+                    "title",
+                    "rating",
+                    "tags"
+                ],
                 "properties": {
                     "title": {
                         "type": "string",
@@ -326,11 +436,62 @@
                     }
                 }
             },
+            "MovieTags": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer"
+                        },
+                        "note_id": {
+                            "type": "integer"
+                        },
+                        "user_id": {
+                            "type": "integer"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "MovieNoteWithTags": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "rating": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "movie_tags": {
+                        "$ref": "#/components/schemas/MovieTags"
+                    }
+                }
+            },
             "Error": {
                 "type": "object",
                 "properties": {
                     "status": {
-                        "type":"string"
+                        "type": "string"
                     },
                     "message": {
                         "type": "string"
@@ -369,7 +530,7 @@
                     }
                 }
             },
-            "InvalidOldPasswordError":{
+            "InvalidOldPasswordError": {
                 "description": "A senha antiga não confere",
                 "content": {
                     "application/json": {
