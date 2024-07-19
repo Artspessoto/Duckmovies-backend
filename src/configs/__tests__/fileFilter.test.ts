@@ -13,7 +13,7 @@ describe("File Filter", () => {
 
         expect(spy).toBeCalledWith({
             "message": "Apenas imagens com extensão jpeg, jpg, png ou gif são permitidas.",
-            "statusCode": 401,
+            "statusCode": 400,
         })
     });
 

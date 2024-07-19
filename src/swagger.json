@@ -111,6 +111,58 @@
                 }
             }
         },
+        "/users/avatar": {
+            "patch": {
+                "summary": "Atualiza o avatar do usuário",
+                "description": "Envia um arquivo com extensão jpeg, jpg, png ou gif para atualizar o avatar do usuário",
+                "tags": [
+                    "Users"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "avatar": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Arquivo do avatar do usuário"
+                                    }
+                                },
+                                "required": [
+                                    "avatar"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/FullUserDataResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Apenas imagens com extensão jpeg, jpg, png ou gif são permitidas."
+                    },
+                    "401": {
+                        "description": "JWT Token não informado"
+                    }
+                }
+            }
+        },
         "/sessions": {
             "post": {
                 "summary": "Cria uma sessão para o usuário",
@@ -511,7 +563,7 @@
                 }
             },
             "Unauthorized": {
-                "description": "JWT Token inválido",
+                "description": "JWT Token não informado",
                 "content": {
                     "application/json": {
                         "schema": {
