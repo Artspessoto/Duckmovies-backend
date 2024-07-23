@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Duckmovies",
-        "description": "Esta API tem como objetivo o gerenciamento de anotações e categorias de filmes feita por usuários autenticados. Para autenticar-se, acesse o endpoint `/sessions` e inicie uma sessão após cadastrar um usuário em `/users`.",
+        "title": "Duckmovies 🦆",
+        "description": "Esta API tem como objetivo o gerenciamento de anotações e categorias de filmes feitas por usuários autenticados. Para autenticar-se, siga os passos abaixo:\n\n1. **Criando um usuário 🙍‍♂️:** Acesse o endpoint `/users` com uma requisição POST para criar um novo usuário com nome, email e senha.\n\n2. **Iniciando sessão (login) 🔑:** Use o endpoint `/sessions` com uma requisição POST para autenticar o usuário recém-criado (login) e obter um token JWT. Esse token é necessário para autenticar suas requisições subsequentes\n3. **Gerenciando notas de filmes 🎥:** Com o token JWT, você pode acessar os endpoints `/movie_notes` para criar, atualizar e listar notas de filmes.\n4. **Gerenciando tags (categorias) de filmes 🍿:** Utilize os endpoints `/movie_tags` para adicionar e listar tags relacionadas às notas de filmes.\n5. **Atualizando dados do usuário 🖊 :** O endpoint `/users` com uma requisição PUT permite atualizar os dados do usuário autenticado.\n6. **Atualizando avatar do usuário 👽:** O endpoint `/users/avatar` com uma requisição PATCH permite que você atualize o avatar do usuário fazendo um upload de imagem da sua máquina.\n\n**Observação:**Certifique-se de incluir o token JWT no cabeçalho `Authorize` para se autenticar e acessar todas as requisições que requerem autenticação 🔓.",
         "contact": {
             "email": "artspessoto@gmail.com"
         },
@@ -14,12 +14,12 @@
     },
     "servers": [
         {
-            "url": "http://localhost:3333/",
-            "description": "API para testes"
-        },
-        {
             "url": "https://duckmovies-backend.onrender.com",
             "description": "API de produção"
+        },
+        {
+            "url": "http://localhost:3333/",
+            "description": "API para testes locais (não acessível publicamente)"
         }
     ],
     "externalDocs": {
@@ -35,6 +35,7 @@
                     "Users"
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -62,7 +63,7 @@
                 }
             },
             "put": {
-                "summary": "Atualiza dados referentes ao usuário",
+                "summary": "Atualiza dados referentes ao usuário que iniciou uma sessão.",
                 "description": "Atualiza dados referentes ao usuário, sendo necessário ser um usuário autenticado para realizar as alterações. Para atualizar seus dados é necessário seu name, email, old_password e password.",
                 "tags": [
                     "Users"
@@ -73,6 +74,7 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -92,21 +94,34 @@
                     }
                 },
                 "responses": {
-                    "401": {
-                        "$ref": "#/components/responses/NotFound"
+                    "404": {
+                        "description": "Usuário não encontrado"
                     },
-                    "400": {
-                        "oneOf": [
-                            {
-                                "$ref": "#/components/responses/InvalidOldPasswordError"
-                            },
-                            {
-                                "$ref": "#/components/responses/EmailInUseError"
-                            },
-                            {
-                                "$ref": "#/components/responses/MissingOldPasswordError"
+                    "401": {
+                        "description": "Requisição inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "JWT Token não informado",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "JWT Token inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O formato do token de autenticação se encontra inválido"
+                                        }
+                                    }
+                                }
                             }
-                        ]
+                        }
                     },
                     "200": {
                         "description": "Usuário atualizado com sucesso"
@@ -161,7 +176,30 @@
                         "description": "Apenas imagens com extensão jpeg, jpg, png ou gif são permitidas."
                     },
                     "401": {
-                        "description": "JWT Token não informado"
+                        "description": "Requisição inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "JWT Token não informado",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "JWT Token inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O formato do token de autenticação se encontra inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -245,18 +283,33 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Ok",
+                        "description": "Ok"
+                    },
+                    "401": {
+                        "description": "Requisição inválida",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "JWT Token não informado",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "JWT Token inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O formato do token de autenticação se encontra inválido"
+                                        }
+                                    }
                                 }
                             }
                         }
-                    },
-                    "401": {
-                        "description": "JWT Token não informado"
                     }
                 }
             },
@@ -273,35 +326,22 @@
                 ],
                 "parameters": [
                     {
-                        "name": "Sharknado",
+                        "name": "title",
                         "in": "query",
-                        "description": "Título do filme para busca"
+                        "description": "Título do filme para busca",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
-                        "name": "Terror, Comédia",
+                        "name": "tags",
                         "in": "query",
-                        "description": "Categoria do filme para busca"
-                    }
-                ]
-            }
-        },
-        "/movie_notes/:id": {
-            "get": {
-                "summary": "Retorna dados das anotações de filmes pelo identificador",
-                "description": "Recupera anotações específicas pelo identificador da anotação do filme passado por parâmetro (Route Params). A requisição vai retornar a nota do filme (título, descrição, classificação e as categorias criadas) se for bem sucedida.",
-                "tags": [
-                    "Movie_notes"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": 1,
-                        "in": "params",
-                        "description": "Identificador da nota do filme para busca"
+                        "description": "Categoria do filme para busca",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -317,7 +357,94 @@
                         }
                     },
                     "401": {
-                        "description": "JWT Token não informado"
+                        "description": "Requisição inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "JWT Token não informado",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "JWT Token inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O formato do token de autenticação se encontra inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/movie_notes/{id}": {
+            "get": {
+                "summary": "Retorna dados das anotações de filmes pelo identificador",
+                "description": "Recupera anotações específicas pelo identificador da anotação do filme passado por parâmetro (Route Params). A requisição vai retornar a nota do filme (título, descrição, classificação e as categorias criadas) se for bem sucedida.",
+                "tags": [
+                    "Movie_notes"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Identificador da nota do filme para busca",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MovieNoteWithTags"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Requisição inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "JWT Token não informado",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "JWT Token inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O formato do token de autenticação se encontra inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -344,7 +471,30 @@
                         "description": "Ok"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "description": "Requisição inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "JWT Token não informado",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "JWT Token inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O formato do token de autenticação se encontra inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -373,7 +523,30 @@
                         }
                     },
                     "401": {
-                        "description": "JWT Token não informado"
+                        "description": "Requisição inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "JWT Token não informado",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "JWT Token inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "O formato do token de autenticação se encontra inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -411,6 +584,11 @@
             },
             "UserRegister": {
                 "type": "object",
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
                 "properties": {
                     "name": {
                         "type": "string"
@@ -436,6 +614,12 @@
             },
             "UserUpdate": {
                 "type": "object",
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "old_password"
+                ],
                 "properties": {
                     "name": {
                         "type": "string"
@@ -550,58 +734,6 @@
                     },
                     "message": {
                         "type": "string"
-                    }
-                }
-            }
-        },
-        "responses": {
-            "NotFound": {
-                "description": "Usuário não encontrado",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Error"
-                        }
-                    }
-                }
-            },
-            "Unauthorized": {
-                "description": "JWT Token não informado",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Error"
-                        }
-                    }
-                }
-            },
-            "MissingOldPasswordError": {
-                "description": "Você precisa informar a senha antiga para definir a nova senha",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Error"
-                        }
-                    }
-                }
-            },
-            "InvalidOldPasswordError": {
-                "description": "A senha antiga não confere",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Error"
-                        }
-                    }
-                }
-            },
-            "EmailInUseError": {
-                "description": "Este e-mail já está em uso",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Error"
-                        }
                     }
                 }
             }

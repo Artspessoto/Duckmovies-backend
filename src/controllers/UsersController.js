@@ -43,7 +43,7 @@ class UserController {
     const user_id = req.user.id;
     const user = await knex("users").where({ id: user_id }).first();
 
-    if (!user) throw new AppError("Usuário não encontrado", 401);
+    if (!user) throw new AppError("Usuário não encontrado", 404);
 
     const userWithUpdateEmail = await knex("users").where({ email }).first();
 
