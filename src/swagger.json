@@ -55,7 +55,44 @@
                 },
                 "responses": {
                     "400": {
-                        "description": "Este e-mail já está em uso."
+                        "description": "Requisição inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "UsedEmail": {
+                                        "summary": "Email em uso",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "Este e-mail já está em uso."
+                                        }
+                                    },
+                                    "InvalidEmail": {
+                                        "summary": "Formato de email inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "E-mail inválido"
+                                        }
+                                    },
+                                    "ShortName": {
+                                        "summary": "Nome precisa ter mais de 1 caractere",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "Nome muito curto"
+                                        }
+                                    },
+                                    "ShortPassword": {
+                                        "summary": "Senha precisa ter mais de 6 caracteres",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "Senha muito curta"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     },
                     "201": {
                         "description": "Ok"
