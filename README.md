@@ -30,10 +30,10 @@ run `tsc --init` to create a `tsconfig.json` file
 **Validação de dados:**
 * Zod
 
-**Teste unitário:**
+**Teste de requisição HTTP:**
 * Supertest
 
-**Teste de integração:**
+**Teste unitário e de integração:**
 * Vitest
 
 **Banco de dados:**
@@ -68,11 +68,18 @@ npm install
 npm run dev
 ```
 
-4. **Gerenciar tabelas do banco de dados com Knex:**
+### 4. **Gerenciar tabelas do banco de dados com Knex:**
 O Knex.js é utilizado para gerenciar as migrações de banco de dados neste projeto. As migrações garantem que o banco de dados esteja atualizado com as tabelas e campos mais recentes.
 
 ```
 npm run migrate
 ```
 
+## Como rodar os testes
+### Testes Unitários e de Integração
+
+**Para rodar os testes:**
+```
+npm run test
+```
 
