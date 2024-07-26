@@ -104,12 +104,13 @@ describe("User routes", () => {
   it("should update an user name", async () => {
     const user = {
       name: "User1 Teste",
-      email: "user1@gmail.com",
+      email: "user1@email.com",
       old_password: "1234567",
       password: "1234567",
     };
 
     const token = await getTestJwt(user);
+    console.log("TOKEN", token);
 
     const url = "/users";
 

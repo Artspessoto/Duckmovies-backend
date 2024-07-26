@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import supertest from "supertest";
 
-// import { App } from "../../server.js";
 const App = require("../../server.js");
 import { getTestJwt } from "../../utils/test-utils/getTestJwt";
 
@@ -9,7 +8,7 @@ describe("MovieNotes routes", () => {
   it("should create an movie_note", async () => {
     const user = {
       name: "User1 Teste",
-      email: "user1@gmail.com",
+      email: "user1@email.com",
       old_password: "1234567",
       password: "1234567",
     };

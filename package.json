@@ -14,8 +14,8 @@
     "docker:down": "docker-compose down"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Arthur Martins Lopes Spessoto",
+  "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
@@ -29,13 +29,15 @@
     "sqlite3": "^5.1.7",
     "swagger-ui-express": "^5.0.1",
     "tsx": "^4.15.4",
-    "typescript": "^5.4.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/node": "^20.14.12",
     "@types/supertest": "^6.0.2",
     "nodemon": "^3.1.0",
     "supertest": "^7.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4",
     "vitest": "^1.6.0"
   }
 }
