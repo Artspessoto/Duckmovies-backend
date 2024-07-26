@@ -2,13 +2,12 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "start": "node ./src/server.js",
+    "start": "node ./dist/src/server.js",
     "dev": "tsx watch ./src/index.ts",
     "migrate": "knex migrate:latest",
     "test": "vitest",
-    "build": "tsc"
+    "build": "tsc -p ."
   },
   "keywords": [],
   "author": "",
