@@ -2,7 +2,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 import supertest, { Test } from "supertest";
 import { getTestJwt } from "../../utils/test-utils/getTestJwt.js";
 
-import { App } from "../../server.js";
+// import { App } from "../../server.js";
+const App = require("../../server.js");
 import TestAgent from "supertest/lib/agent.js";
 
 let server: TestAgent<Test>;
@@ -28,9 +29,7 @@ describe("User Avatar", () => {
     const response = await server
       .patch(url)
       .set("Authorization", `Bearer ${token}`)
-      // .attach("avatar", filePath);
-
-    console.log(response.body)
+      .attach("avatar", filePath);
 
     expect(response.status).toEqual(200);
   });
