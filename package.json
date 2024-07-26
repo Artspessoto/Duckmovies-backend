@@ -4,10 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start2": "node ./dist/index.js",
+    "dev": "tsx watch ./src/index.ts",
     "start": "pm2-runtime start ecosystem.config.js --env production",
-    "dev": "tsx watch ./src/index.js",
     "migrate": "knex migrate:latest",
-    "test": "vitest"
+    "test": "vitest",
+    "build": "tsc -p .",
+    "docker:up": "ENV_FILE=.env docker-compose up --build",
+    "docker:down": "docker-compose down"
   },
   "keywords": [],
   "author": "",
