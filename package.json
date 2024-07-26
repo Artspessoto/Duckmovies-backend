@@ -1,5 +1,5 @@
 {
-  "name": "Duckmovies API",
+  "name": "duckmovies",
   "version": "1.0.0",
   "description": "A API Duckmovies tem como objetivo o gerenciamento de anotações e categorias de filmes feitas por usuários autenticados, isto é, usuários que iniciaram a sessão. Vou explicar em detalhes sobre cada parte e como elas se complementam.",
   "main": "index.js",
