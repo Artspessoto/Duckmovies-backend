@@ -7,7 +7,9 @@
     "dev": "tsx watch ./src/index.ts",
     "migrate": "knex migrate:latest",
     "test": "vitest",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "docker:up": "ENV_FILE=.env docker-compose up --build",
+    "docker:down": "docker-compose down"
   },
   "keywords": [],
   "author": "",
