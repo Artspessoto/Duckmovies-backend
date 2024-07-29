@@ -37,5 +37,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-// export const App = app;
 module.exports = app;

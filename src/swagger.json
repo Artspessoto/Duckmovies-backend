@@ -18,7 +18,7 @@
             "description": "API de produção"
         },
         {
-            "url": "http://localhost:3333/",
+            "url": "http://localhost:4444/",
             "description": "API para testes locais (não acessível publicamente)"
         }
     ],
@@ -77,17 +77,52 @@
                                         }
                                     },
                                     "ShortName": {
-                                        "summary": "Nome precisa ter mais de 1 caractere",
+                                        "summary": "Nome precisa ter 2 caracteres ou mais",
                                         "value": {
                                             "status": "Error",
                                             "message": "Nome muito curto"
                                         }
                                     },
+                                    "LongName": {
+                                        "summary": "Nome não pode ultrapassar 50 caracteres",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "Nome muito longo"
+                                        }
+                                    },
                                     "ShortPassword": {
-                                        "summary": "Senha precisa ter mais de 6 caracteres",
+                                        "summary": "Senha precisa ter ao menos 6 caracteres",
                                         "value": {
                                             "status": "Error",
                                             "message": "Senha muito curta"
+                                        }
+                                    },
+                                    "LongPassword": {
+                                        "summary": "Senha não pode ultrapassar 12 caracteres",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "Senha muito lçnga"
+                                        }
+                                    },
+                                    "ShortEmail": {
+                                        "summary": "E-mail precisa ter ao menos 8 caracteres",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "E-mail muito curto"
+                                        }
+                                    },
+                                    "LongEmail": {
+                                        "summary": "E-mail não pode ultrapassar 254 caracteres",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "E-mail muito longo"
+                                        }
+                                    },
+                                    "RequiredField": {
+                                        "summary": "Preenchimento dos campos é obrigatório",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "Required"
                                         }
                                     }
                                 }

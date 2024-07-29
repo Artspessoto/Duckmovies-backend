@@ -4,9 +4,13 @@ const knex = require("../database/knex");
 const z = require("zod");
 
 const CreateUserPayload = z.object({
-  email: z.string().email("E-mail inválido"),
-  name: z.string().min(1, "Nome muito curto"),
-  password: z.string().min(6, "Senha muito curta"),
+  email: z
+    .string()
+    .email("E-mail inválido")
+    .min(8, "E-mail muito curto")
+    .max(254, "E-mail muito longo"),
+  name: z.string().min(2, "Nome muito curto").max(50, "Nome muito longo"),
+  password: z.string().min(6, "Senha muito curta").max(12, "Senha muito longa"),
 });
 
 class UserController {
