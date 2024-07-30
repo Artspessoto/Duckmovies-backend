@@ -3,11 +3,17 @@ const AppError = require("../utils/AppError");
 const z = require("zod");
 
 const CreateMovieNotePayload = z.object({
-  title: z.string().min(1, "Título é obrigatório").max(255, "Título não pode exceder 255 caracteres"),
-  description: z.string().optional(),
-  rating: z.number().min(1, "Avaliação do filme deve ser entre 1 e 5").max(5, "Avaliação do filme deve ser entre 1 e 5"),
-  tags: z.array(z.string())
-})
+  title: z
+    .string()
+    .min(2, "Título muito curto")
+    .max(255, "Título não pode exceder 255 caracteres"),
+  description: z.string().max(255, "Descrição muito longa").optional(),
+  rating: z
+    .number()
+    .min(1, "Avaliação do filme deve ser entre 1 e 5")
+    .max(5, "Avaliação do filme deve ser entre 1 e 5"),
+  tags: z.array(z.string()).min(1, "Pelo menos 1 categoria é obrigatória"),
+});
 
 class Movie_notesController {
   async create(req, res) {
@@ -21,8 +27,7 @@ class Movie_notesController {
       tags,
     });
 
-    if(!success) 
-      throw new AppError(error.errors.map((err) => err.message.join("\n")))
+    if (!success) throw new AppError(error.errors.map((err) => err.message));
 
     const [movieNotes_id] = await knex("movie_notes").insert({
       title,

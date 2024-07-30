@@ -110,7 +110,6 @@ describe("User routes", () => {
     };
 
     const token = await getTestJwt(user);
-    console.log("TOKEN", token);
 
     const url = "/users";
 

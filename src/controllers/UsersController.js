@@ -24,7 +24,7 @@ class UserController {
     });
 
     if (!success)
-      throw new AppError(error.errors.map((err) => err.message).join("; "));
+      throw new AppError(error.errors.map((err) => err.message));
 
     const checkUserExists = await knex("users").where({ email }).first();
 

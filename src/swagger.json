@@ -4,6 +4,7 @@
         "title": "Duckmovies 🦆",
         "description": "Esta API tem como objetivo o gerenciamento de anotações e categorias de filmes feitas por usuários autenticados. Para autenticar-se, siga os passos abaixo:\n\n1. **Criando um usuário 🙍‍♂️:** Acesse o endpoint `/users` com uma requisição POST para criar um novo usuário com nome, email e senha.\n\n2. **Iniciando sessão (login) 🔑:** Use o endpoint `/sessions` com uma requisição POST para autenticar o usuário recém-criado (login) e obter um token JWT. Esse token é necessário para autenticar suas requisições subsequentes\n3. **Gerenciando notas de filmes 🎥:** Com o token JWT, você pode acessar os endpoints `/movie_notes` para criar, atualizar e listar notas de filmes.\n4. **Gerenciando tags (categorias) de filmes 🍿:** Utilize os endpoints `/movie_tags` para adicionar e listar tags relacionadas às notas de filmes.\n5. **Atualizando dados do usuário 🖊 :** O endpoint `/users` com uma requisição PUT permite atualizar os dados do usuário autenticado.\n6. **Atualizando avatar do usuário 👽:** O endpoint `/users/avatar` com uma requisição PATCH permite que você atualize o avatar do usuário fazendo um upload de imagem da sua máquina.\n\n**Observação:** Certifique-se de incluir o token JWT no cabeçalho `Authorize` para se autenticar e acessar todas as requisições que requerem autenticação 🔓.",
         "contact": {
+            "name": "Arthur Martins Lopes Spessoto",
             "email": "artspessoto@gmail.com"
         },
         "version": "1.0.0",
@@ -55,7 +56,7 @@
                 },
                 "responses": {
                     "400": {
-                        "description": "Requisição inválida",
+                        "description": "Dados inválidos",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -170,7 +171,7 @@
                         "description": "Usuário não encontrado"
                     },
                     "401": {
-                        "description": "Requisição inválida",
+                        "description": "Não autorizado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -251,7 +252,7 @@
                         "description": "Apenas imagens com extensão jpeg, jpg, png ou gif são permitidas."
                     },
                     "401": {
-                        "description": "Requisição inválida",
+                        "description": "Não autorizado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -287,6 +288,7 @@
                     "Sessions"
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -334,6 +336,7 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -361,7 +364,7 @@
                         "description": "Ok"
                     },
                     "401": {
-                        "description": "Requisição inválida",
+                        "description": "Não autorizado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -369,17 +372,64 @@
                                 },
                                 "examples": {
                                     "Unauthorized": {
-                                        "summary": "JWT Token não informado",
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                            "message": "JWT Token não informado"
                                         }
                                     },
                                     "InvalidToken": {
-                                        "summary": "JWT Token inválido",
+                                        "summary": "O formato do token de autenticação se encontra inválido",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O formato do token de autenticação se encontra inválido"
+                                            "message": "JWT Token inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Dados inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "ShortTitle": {
+                                        "summary": "O título do filme precisa ter ao menos 2 caracteres",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "Título muito curto"
+                                        }
+                                    },
+                                    "LongTitle": {
+                                        "summary": "O título do filme precisa ter ao menos 2 caracteres",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "Título muito longo"
+                                        }
+                                    },
+                                    "LongDescription": {
+                                        "summary": "Descrição do filme não pode exceder 255 caracteres",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "Descrição muito longa"
+                                        }
+                                    },
+                                    "InvalidRating": {
+                                        "summary": "Avaliação do filme inválida",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "Avaliação do filme deve ser entre 1 e 5"
+                                        }
+                                    },
+                                    "InvalidTag": {
+                                        "summary": "Tag precisa ter ao menos 1 categoria informada",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "Pelo menos 1 categoria é obrigatória"
                                         }
                                     }
                                 }
@@ -432,7 +482,7 @@
                         }
                     },
                     "401": {
-                        "description": "Requisição inválida",
+                        "description": "Não autorizado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -440,17 +490,17 @@
                                 },
                                 "examples": {
                                     "Unauthorized": {
-                                        "summary": "JWT Token não informado",
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                            "message": "JWT Token não informado"
                                         }
                                     },
                                     "InvalidToken": {
-                                        "summary": "JWT Token inválido",
+                                        "summary": "O formato do token de autenticação se encontra inválido",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O formato do token de autenticação se encontra inválido"
+                                            "message": "JWT Token inválido"
                                         }
                                     }
                                 }
@@ -496,7 +546,7 @@
                         }
                     },
                     "401": {
-                        "description": "Requisição inválida",
+                        "description": "Não autorizado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -504,17 +554,17 @@
                                 },
                                 "examples": {
                                     "Unauthorized": {
-                                        "summary": "JWT Token não informado",
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                            "message": "JWT Token não informado"
                                         }
                                     },
                                     "InvalidToken": {
-                                        "summary": "JWT Token inválido",
+                                        "summary": "O formato do token de autenticação se encontra inválido",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O formato do token de autenticação se encontra inválido"
+                                            "message": "JWT Token inválido"
                                         }
                                     }
                                 }
@@ -536,9 +586,13 @@
                 ],
                 "parameters": [
                     {
-                        "name": 1,
-                        "in": "params",
-                        "description": "Identificador da nota do filme para exclusão"
+                        "name": "id",
+                        "in": "path",
+                        "description": "Identificador da nota do filme para exclusão",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
@@ -546,7 +600,7 @@
                         "description": "Ok"
                     },
                     "401": {
-                        "description": "Requisição inválida",
+                        "description": "Não autorizado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -554,17 +608,17 @@
                                 },
                                 "examples": {
                                     "Unauthorized": {
-                                        "summary": "JWT Token não informado",
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                            "message": "JWT Token não informado"
                                         }
                                     },
                                     "InvalidToken": {
-                                        "summary": "JWT Token inválido",
+                                        "summary": "O formato do token de autenticação se encontra inválido",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O formato do token de autenticação se encontra inválido"
+                                            "message": "JWT Token inválido"
                                         }
                                     }
                                 }
@@ -598,7 +652,7 @@
                         }
                     },
                     "401": {
-                        "description": "Requisição inválida",
+                        "description": "Não autorizado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -606,17 +660,17 @@
                                 },
                                 "examples": {
                                     "Unauthorized": {
-                                        "summary": "JWT Token não informado",
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                            "message": "JWT Token inválido"
                                         }
                                     },
                                     "InvalidToken": {
-                                        "summary": "JWT Token inválido",
+                                        "summary": "O formato do token de autenticação se encontra inválido",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O formato do token de autenticação se encontra inválido"
+                                            "message": "JWT Token inválido"
                                         }
                                     }
                                 }
@@ -628,8 +682,8 @@
         },
         "/files/{image}": {
             "get": {
-                "summary": "Retorna a foto do avatar do usuário salvo depois de atualizar seu avatar",
-                "description": "Mostra a imagem salva do usuário  partir do nome da imagem passada por parâmetro.",
+                "summary": "Retorna a foto do avatar do usuário salvo.",
+                "description": "Este endpoint mostra a imagem do avatar do usuário com base no nome da imagem passada como parâmetro. Para usar esta funcionalidade corretamente:\n\n1. Atualize a foto do seu avatar estando autenticado e guarde o valor de retorno do avatar da requisição.\n2. Use o nome da imagem retornada na requisição como parâmetro para este endpoint.\n\nPara testar esta funcionalidade, use o nome da imagem de teste: `d731ac5b5c731ea323f4-teste.PNG`.",
                 "tags": [
                     "Files"
                 ],
@@ -646,9 +700,27 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Imagem do usuário",
+                        "description": "Imagem do usuário retornada com sucesso",
                         "content": {
-                            "image/*": {
+                            "image/png": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "image/jpeg": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "image/jpg": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "image/gif": {
                                 "schema": {
                                     "type": "string",
                                     "format": "binary"
@@ -714,6 +786,10 @@
             },
             "UserLogin": {
                 "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
                 "properties": {
                     "email": {
                         "type": "string"
@@ -766,23 +842,19 @@
                 ],
                 "properties": {
                     "title": {
-                        "type": "string",
-                        "required": "true"
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
                     },
                     "rating": {
-                        "type": "integer",
-                        "required": "true"
+                        "type": "integer"
                     },
                     "tags": {
                         "type": "array",
                         "items": {
-                            "type": "string",
-                            "required": "true"
-                        },
-                        "required": "true"
+                            "type": "string"
+                        }
                     }
                 }
             },
