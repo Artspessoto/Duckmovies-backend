@@ -4,7 +4,6 @@
         "title": "Duckmovies 🦆",
         "description": "Esta API tem como objetivo o gerenciamento de anotações e categorias de filmes feitas por usuários autenticados. Para autenticar-se, siga os passos abaixo:\n\n1. **Criando um usuário 🙍‍♂️:** Acesse o endpoint `/users` com uma requisição POST para criar um novo usuário com nome, email e senha.\n\n2. **Iniciando sessão (login) 🔑:** Use o endpoint `/sessions` com uma requisição POST para autenticar o usuário recém-criado (login) e obter um token JWT. Esse token é necessário para autenticar suas requisições subsequentes\n3. **Gerenciando notas de filmes 🎥:** Com o token JWT, você pode acessar os endpoints `/movie_notes` para criar, atualizar e listar notas de filmes.\n4. **Gerenciando tags (categorias) de filmes 🍿:** Utilize os endpoints `/movie_tags` para adicionar e listar tags relacionadas às notas de filmes.\n5. **Atualizando dados do usuário 🖊 :** O endpoint `/users` com uma requisição PUT permite atualizar os dados do usuário autenticado.\n6. **Atualizando avatar do usuário 👽:** O endpoint `/users/avatar` com uma requisição PATCH permite que você atualize o avatar do usuário fazendo um upload de imagem da sua máquina.\n\n**Observação:** Certifique-se de incluir o token JWT no cabeçalho `Authorize` para se autenticar e acessar todas as requisições que requerem autenticação 🔓.",
         "contact": {
-            "name": "Arthur Martins Lopes Spessoto",
             "email": "artspessoto@gmail.com"
         },
         "version": "1.0.0",

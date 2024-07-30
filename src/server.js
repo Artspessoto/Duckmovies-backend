@@ -7,11 +7,19 @@ const express = require("express");
 const routes = require("./routes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocs = require("./swagger.json");
+const { SwaggerTheme, SwaggerThemeNameEnum } = require('swagger-themes');
 
 const app = express();
 app.use(express.json());
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+const theme = new SwaggerTheme();
+
+const options = {
+  explorer: true,
+  customCss: theme.getBuffer(SwaggerThemeNameEnum.FEELING_BLUE)
+}
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs, options));
 
 app.use("/files", express.static(uploadConfig.UPLOADS_FOLDER));
 
