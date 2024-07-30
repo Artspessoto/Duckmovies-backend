@@ -101,7 +101,7 @@
                                         "summary": "Senha não pode ultrapassar 12 caracteres",
                                         "value": {
                                             "status": "Error",
-                                            "message": "Senha muito lçnga"
+                                            "message": "Senha muito longa"
                                         }
                                     },
                                     "ShortEmail": {
@@ -178,17 +178,17 @@
                                 },
                                 "examples": {
                                     "Unauthorized": {
-                                        "summary": "JWT Token não informado",
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                            "message": "JWT Token inválido"
                                         }
                                     },
                                     "InvalidToken": {
-                                        "summary": "JWT Token inválido",
+                                        "summary": "O formato do token de autenticação se encontra inválido",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O formato do token de autenticação se encontra inválido"
+                                            "message": "JWT Token inválido"
                                         }
                                     }
                                 }
@@ -197,6 +197,9 @@
                     },
                     "200": {
                         "description": "Usuário atualizado com sucesso"
+                    },
+                    "400": {
+                        "description": "Preenchimento dos campos é obrigatório"
                     }
                 }
             }
@@ -256,17 +259,17 @@
                                 },
                                 "examples": {
                                     "Unauthorized": {
-                                        "summary": "JWT Token não informado",
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O usuário precisa ter feito a sessão (login) para atualizar"
+                                            "message": "JWT Token inválido"
                                         }
                                     },
                                     "InvalidToken": {
-                                        "summary": "JWT Token inválido",
+                                        "summary": "O formato do token de autenticação se encontra inválido",
                                         "value": {
                                             "status": "Error",
-                                            "message": "O formato do token de autenticação se encontra inválido"
+                                            "message": "JWT Token inválido"
                                         }
                                     }
                                 }
@@ -627,7 +630,9 @@
             "get": {
                 "summary": "Retorna a foto do avatar do usuário salvo depois de atualizar seu avatar",
                 "description": "Mostra a imagem salva do usuário  partir do nome da imagem passada por parâmetro.",
-                "tags": ["Files"],
+                "tags": [
+                    "Files"
+                ],
                 "parameters": [
                     {
                         "name": "image",
@@ -638,7 +643,23 @@
                             "type": "string"
                         }
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Imagem do usuário",
+                        "content": {
+                            "image/*": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Imagem não encontrada"
+                    }
+                }
             }
         }
     },

@@ -11,13 +11,13 @@ const swaggerDocs = require("./swagger.json");
 const app = express();
 app.use(express.json());
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use("/files", express.static(uploadConfig.UPLOADS_FOLDER));
 
 app.get("/", (req, res) => {
   res.redirect("/api-docs");
-})
+});
 
 database();
 
@@ -34,6 +34,13 @@ app.use((err, req, res, next) => {
   return res.status(500).json({
     status: "Error",
     message: "Internal Server Error",
+  });
+});
+
+app.use("/files", (req, res, next) => {
+  res.status(404).json({
+    status: "Error",
+    message: "Imagem não encontrada",
   });
 });
 
