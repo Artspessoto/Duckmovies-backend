@@ -16,6 +16,9 @@
   "keywords": [],
   "author": "Arthur Martins Lopes Spessoto",
   "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0 <21.0.0"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",

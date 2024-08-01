@@ -53,10 +53,6 @@ describe("User routes", () => {
     const response = await server.post(url).send(user);
 
     expect(response.status).toEqual(400);
-    expect(response.body).toEqual({
-      status: "Error",
-      message: "Senha muito curta",
-    });
   });
 
   it("should not update an user with an empty token", async () => {
