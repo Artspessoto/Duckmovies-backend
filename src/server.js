@@ -9,7 +9,10 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocs = require("./swagger.json");
 const { SwaggerTheme, SwaggerThemeNameEnum } = require('swagger-themes');
 
+const cors = require("cors");
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 const theme = new SwaggerTheme();
