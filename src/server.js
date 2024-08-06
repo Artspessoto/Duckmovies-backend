@@ -1,6 +1,5 @@
 require("express-async-errors");
 const AppError = require("./utils/AppError");
-const database = require("./database/sqlite");
 const uploadConfig = require("./configs/upload");
 
 const express = require("express");
@@ -29,8 +28,6 @@ app.use("/files", express.static(uploadConfig.UPLOADS_FOLDER));
 app.get("/", (req, res) => {
   res.redirect("/api-docs");
 });
-
-database();
 
 app.use(routes);
 
