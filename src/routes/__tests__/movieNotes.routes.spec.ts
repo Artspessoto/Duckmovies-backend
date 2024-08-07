@@ -30,9 +30,7 @@ describe("MovieNotes routes", () => {
       .post(url)
       .set("Authorization", `Bearer ${token}`)
       .send(movieNote);
-    
-      console.log(response.body);
-    
+
     expect(response.status).toEqual(201);
   });
 });
