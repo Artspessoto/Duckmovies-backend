@@ -29,16 +29,16 @@ class Movie_notesController {
 
     if (!success) throw new AppError(error.errors.map((err) => err.message));
 
-    const [movieNotes_id] = await knex("movie_notes").insert({
+    const [movieNote] = await knex("movie_notes").insert({
       title,
       description,
       rating,
       user_id,
-    });
+    }).returning("*");
 
     const movie_tagsInsert = tags.map((name) => {
       return {
-        note_id: movieNotes_id,
+        note_id: movieNote.id,
         name,
         user_id,
       };

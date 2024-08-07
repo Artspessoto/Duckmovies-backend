@@ -7,8 +7,8 @@ import { getTestJwt } from "../../utils/test-utils/getTestJwt";
 describe("MovieNotes routes", () => {
   it("should create an movie_note", async () => {
     const user = {
-      name: "User1 Teste",
-      email: "user1@email.com",
+      name: "Teste 2p6buk",
+      email: "teste-ceia6d@gmail.com",
       old_password: "1234567",
       password: "1234567",
     };
@@ -30,7 +30,9 @@ describe("MovieNotes routes", () => {
       .post(url)
       .set("Authorization", `Bearer ${token}`)
       .send(movieNote);
-
+    
+      console.log(response.body);
+    
     expect(response.status).toEqual(201);
   });
 });

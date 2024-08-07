@@ -98,8 +98,8 @@ describe("User routes", () => {
 
   it("should update an user name", async () => {
     const user = {
-      name: "User1 Teste",
-      email: "user1@email.com",
+      name: "Teste 2p6buk",
+      email: "teste-ceia6d@gmail.com",
       old_password: "1234567",
       password: "1234567",
     };
