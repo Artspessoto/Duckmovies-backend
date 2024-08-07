@@ -3,7 +3,7 @@ exports.up = (knex) =>
     table.increments("id").primary();
     table.string("name", 255).notNullable();
     table.string("email", 254).notNullable().unique();
-    table.string("password", 12).notNullable();
+    table.string("password", 60).notNullable();
     table.text("avatar").nullable();
 
     table.timestamp("created_at").default(knex.fn.now());
