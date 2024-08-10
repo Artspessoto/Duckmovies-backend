@@ -13,6 +13,13 @@ const CreateUserPayload = z.object({
   password: z.string().min(6, "Senha muito curta").max(12, "Senha muito longa"),
 });
 
+const UpdateUserPayload = CreateUserPayload.partial().extend({
+  old_password: z
+    .string()
+    .min(6, "Senha muito curta")
+    .max(12, "Senha muito longa"),
+});
+
 class UserController {
   async create(req, res) {
     const { name, email, password } = req.body;
@@ -23,8 +30,7 @@ class UserController {
       password,
     });
 
-    if (!success)
-      throw new AppError(error.errors.map((err) => err.message));
+    if (!success) throw new AppError(error.errors.map((err) => err.message));
 
     const checkUserExists = await knex("users").where({ email }).first();
 
@@ -43,6 +49,15 @@ class UserController {
 
   async update(req, res) {
     const { name, email, password, old_password } = req.body;
+
+    const { success, error } = UpdateUserPayload.safeParse({
+      name,
+      email,
+      password,
+      old_password,
+    });
+
+    if (!success) throw new AppError(error.errors.map((err) => err.message));
 
     const user_id = req.user.id;
     const user = await knex("users").where({ id: user_id }).first();
