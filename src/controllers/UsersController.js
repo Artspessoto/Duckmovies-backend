@@ -3,21 +3,34 @@ const AppError = require("../utils/AppError");
 const knex = require("../database/knex");
 const z = require("zod");
 
+const emailMessage = "E-mail inválido (8-254 caracteres)";
+const nameMessage = "Nome (2-50 caracteres)";
+const passwordMessage = "Senha (6-12 caracteres)";
+const oldPasswordMessage = "Senha atual obrigatória (6-12 caracteres)";
+const newPasswordMessage = "Nova senha obrigatória (6-12 caracteres)";
+
 const CreateUserPayload = z.object({
   email: z
     .string()
-    .email("E-mail inválido")
-    .min(8, "E-mail muito curto")
-    .max(254, "E-mail muito longo"),
-  name: z.string().min(2, "Nome muito curto").max(50, "Nome muito longo"),
-  password: z.string().min(6, "Senha muito curta").max(12, "Senha muito longa"),
+    .email(emailMessage)
+    .min(8, emailMessage)
+    .max(254, emailMessage),
+  name: z.string().min(2, nameMessage).max(50, nameMessage),
+  password: z.string().min(6, passwordMessage).max(12, passwordMessage),
 });
 
-const UpdateUserPayload = CreateUserPayload.partial().extend({
-  old_password: z
-    .string()
-    .min(6, "Senha muito curta")
-    .max(12, "Senha muito longa"),
+const UpdateUserPayload = z.object({
+  old_password: z.string().min(6, oldPasswordMessage).max(12, oldPasswordMessage),
+  password: z.string()
+    .optional()
+    .refine((value) => {
+      if (value) {
+        return value.length >= 6 && value.length <= 12;
+      }
+      return true; 
+    }, {
+      message: newPasswordMessage
+    })
 });
 
 class UserController {
@@ -57,12 +70,21 @@ class UserController {
       old_password,
     });
 
+    if (!old_password)
+      throw new AppError(
+        "Você precisa informar a senha atual para atualizar seus dados."
+      );
+
     if (!success) throw new AppError(error.errors.map((err) => err.message));
 
     const user_id = req.user.id;
     const user = await knex("users").where({ id: user_id }).first();
 
     if (!user) throw new AppError("Usuário não encontrado", 404);
+
+    const checkOldPassword = await compare(old_password, user.password);
+
+    if (!checkOldPassword) throw new AppError("A senha antiga não confere");
 
     const userWithUpdateEmail = await knex("users").where({ email }).first();
 
@@ -73,17 +95,7 @@ class UserController {
     user.name = name ?? user.name;
     user.email = email ?? user.email;
 
-    if (password && !old_password) {
-      throw new AppError(
-        "Você precisa informar a senha antiga para definir a nova senha"
-      );
-    }
-
-    if (password && old_password) {
-      const checkOldPassword = await compare(old_password, user.password);
-
-      if (!checkOldPassword) throw new AppError("A senha antiga não confere");
-
+    if (password) {
       user.password = await hash(password, 8);
     }
 
