@@ -462,7 +462,6 @@
                         "name": "tags",
                         "in": "query",
                         "description": "Categoria do filme para busca",
-                        "required": true,
                         "schema": {
                             "type": "string"
                         }
