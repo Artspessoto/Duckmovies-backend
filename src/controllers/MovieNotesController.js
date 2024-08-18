@@ -2,17 +2,16 @@ const knex = require("../database/knex");
 const AppError = require("../utils/AppError");
 const z = require("zod");
 
+const title = "Título (2-255)";
+const description = "Descrição do filme não pode exceder 1500 caracteres";
+const rating = "Avaliação do filme deve ser entre 1 e 5";
+const tags = "A inclusão de uma categoria é obrigatória para a criação de uma nota de filme.";
+
 const CreateMovieNotePayload = z.object({
-  title: z
-    .string()
-    .min(2, "Título muito curto")
-    .max(255, "Título não pode exceder 255 caracteres"),
-  description: z.string().max(255, "Descrição muito longa").optional(),
-  rating: z
-    .number()
-    .min(1, "Avaliação do filme deve ser entre 1 e 5")
-    .max(5, "Avaliação do filme deve ser entre 1 e 5"),
-  tags: z.array(z.string()).min(1, "Pelo menos 1 categoria é obrigatória"),
+  title: z.string().min(2, title).max(255, title),
+  description: z.string().max(1500, description).optional(),
+  rating: z.number().min(1, rating).max(5, rating),
+  tags: z.array(z.string()).min(1, tags),
 });
 
 class Movie_notesController {
@@ -29,12 +28,14 @@ class Movie_notesController {
 
     if (!success) throw new AppError(error.errors.map((err) => err.message));
 
-    const [movieNote] = await knex("movie_notes").insert({
-      title,
-      description,
-      rating,
-      user_id,
-    }).returning("*");
+    const [movieNote] = await knex("movie_notes")
+      .insert({
+        title,
+        description,
+        rating,
+        user_id,
+      })
+      .returning("*");
 
     const movie_tagsInsert = tags.map((name) => {
       return {
