@@ -70,52 +70,52 @@
                                         }
                                     },
                                     "InvalidEmail": {
-                                        "summary": "Formato de email inválido",
+                                        "summary": "O formato do e-mail é inválido",
                                         "value": {
                                             "status": "Error",
-                                            "message": "E-mail inválido (8-254 caracteres)"
+                                            "message": "O formato do e-mail é inválido"
                                         }
                                     },
                                     "ShortName": {
                                         "summary": "Nome precisa ter 2 caracteres ou mais",
                                         "value": {
                                             "status": "Error",
-                                            "message": "Nome (2-50 caracteres)"
+                                            "message": "O nome deve conter pelo menos 2 caracteres"
                                         }
                                     },
                                     "LongName": {
                                         "summary": "Nome não pode ultrapassar 50 caracteres",
                                         "value": {
                                             "status": "Error",
-                                            "message": "Nome (2-50 caracteres)"
+                                            "message": "O nome pode conter no máximo 50 caracteres"
                                         }
                                     },
                                     "ShortPassword": {
                                         "summary": "Senha precisa ter ao menos 6 caracteres",
                                         "value": {
                                             "status": "Error",
-                                            "message": "Senha (6-12 caracteres)"
+                                            "message": "A senha deve conter pelo menos 6 caracteres"
                                         }
                                     },
                                     "LongPassword": {
                                         "summary": "Senha não pode ultrapassar 12 caracteres",
                                         "value": {
                                             "status": "Error",
-                                            "message": "Senha (6-12 caracteres)"
+                                            "message": "A senha pode conter no máximo 12 caracteres"
                                         }
                                     },
                                     "ShortEmail": {
                                         "summary": "E-mail precisa ter ao menos 8 caracteres",
                                         "value": {
                                             "status": "Error",
-                                            "message": "E-mail inválido (8-254 caracteres)"
+                                            "message": "O e-mail deve conter pelo menos 8 caracteres"
                                         }
                                     },
                                     "LongEmail": {
                                         "summary": "E-mail não pode ultrapassar 254 caracteres",
                                         "value": {
                                             "status": "Error",
-                                            "message": "E-mail inválido (8-254 caracteres)"
+                                            "message": "O e-mail pode conter no máximo 254 caracteres"
                                         }
                                     },
                                     "RequiredField": {
@@ -130,13 +130,13 @@
                         }
                     },
                     "201": {
-                        "description": "Ok" 
+                        "description": "Ok"
                     }
                 }
             },
             "put": {
                 "summary": "Atualiza dados referentes ao usuário que iniciou uma sessão.",
-                "description": "Atualiza dados referentes ao usuário, sendo necessário ser um usuário autenticado para realizar as alterações. Para atualizar seus dados é necessário seu name e email. Se quiser atualizar a senha, é necessário digitar a antiga para validação",
+                "description": "Atualiza dados referentes ao usuário, sendo necessário ser um usuário autenticado para realizar as alterações. Para atualizar seus dados é necessário seu name, email, old_password e password.",
                 "tags": [
                     "Users"
                 ],
@@ -199,6 +199,196 @@
                         "description": "Usuário atualizado com sucesso"
                     },
                     "400": {
+                        "description": "Preenchimento dos campos é obrigatório"
+                    }
+                }
+            }
+        },
+        "/users/avatar": {
+            "patch": {
+                "summary": "Atualiza o avatar do usuário",
+                "description": "Envia um arquivo com extensão jpeg, jpg, png ou gif para atualizar o avatar do usuário",
+                "tags": [
+                    "Users"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "avatar": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Arquivo do avatar do usuário"
+                                    }
+                                },
+                                "required": [
+                                    "avatar"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/FullUserDataResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Apenas imagens com extensão jpeg, jpg, png ou gif são permitidas."
+                    },
+                    "401": {
+                        "description": "Não autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token inválido"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "O formato do token de autenticação se encontra inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/sessions": {
+            "post": {
+                "summary": "Cria uma sessão para o usuário",
+                "description": "Gera um token para um usuário já cadastrado com tempo de expiração de 1 dia e com a chave secreta, que é usada para verificar e assinar o token, garantindo autenticidade da sessão do usuário na aplicação. Para gerar esse token é necessário que o usuário envie no corpo da requisição os dados de email e password.",
+                "tags": [
+                    "Sessions"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserLogin"
+                            },
+                            "examples": {
+                                "user": {
+                                    "value": {
+                                        "email": "arthur@email.com",
+                                        "password": "123456"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "E-mail e/ou senha incorreta"
+                    },
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/LoggedUser"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/movie_notes": {
+            "post": {
+                "summary": "Cria anotações relacionadas ao filme feitas por um usuário autenticado",
+                "description": "Cria anotações relacionadas ao filme a partir da validação de seu título, descrição, classifição e tags (categorias) relacionadas a ele armazenando a anotação no banco de dados na tabela movie_notes, além de também associar tags informadas à anotação na tabela movie_tags.",
+                "tags": [
+                    "Movie_notes"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MovieNoteRegister"
+                            },
+                            "examples": {
+                                "movie_note": {
+                                    "value": {
+                                        "title": "Sharknado",
+                                        "description": "Os sobreviventes do primeiro tornado de tubarões são obrigados a se reunir mais uma vez para combater uma nova tempestade de tubarões, que dessa vez ameaça Nova York.",
+                                        "rating": 5,
+                                        "tags": [
+                                            "Terror",
+                                            "Ação",
+                                            "Comédia"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ok"
+                    },
+                    "401": {
+                        "description": "Não autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token não informado"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "O formato do token de autenticação se encontra inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
                         "description": "Dados inválidos",
                         "content": {
                             "application/json": {
@@ -206,808 +396,534 @@
                                     "$ref": "#/components/schemas/Error"
                                 },
                                 "examples": {
-                                    "UsedEmail": {
-                                        "summary": "Email em uso",
+                                    "ShortTitle": {
+                                        "summary": "O título do filme precisa ter ao menos 2 caracteres",
                                         "value": {
                                             "status": "Error",
-                                            "message": "Este e-mail já está em uso."
+                                            "message": "Título (2-255)"
                                         }
                                     },
-                                    "OldPasswordMismatch": {
-                                        "summary": "Senha antiga não confere",
+                                    "LongTitle": {
+                                        "summary": "O título do filme precisa ter ao menos 2 caracteres",
                                         "value": {
                                             "status": "Error",
-                                            "message": "A senha antiga não confere"
+                                            "message": "Título (2-255)"
                                         }
                                     },
-                                    "NewPasswordWithoutOldPassword": {
-                                        "summary": "Senha nova definida sem passar a senha antiga",
+                                    "LongDescription": {
+                                        "summary": "Descrição do filme não pode exceder 1500 caracteres",
                                         "value": {
                                             "status": "Error",
-                                            "message": "Você precisa informar a senha antiga para definir a nova senha"
+                                            "message": "Descrição do filme não pode exceder 1500 caracteres"
                                         }
                                     },
-                                    "InvalidEmail": {
-                                        "summary": "Formato de email inválido",
+                                    "InvalidRating": {
+                                        "summary": "Avaliação do filme inválida",
                                         "value": {
                                             "status": "Error",
-                                            "message": "E-mail inválido (8-254 caracteres)"
+                                            "message": "Avaliação do filme deve ser entre 1 e 5"
                                         }
                                     },
-                                    "ShortName": {
-                                        "summary": "Nome precisa ter 2 caracteres ou mais",
+                                    "InvalidTag": {
+                                        "summary": "Tag precisa ter ao menos 1 categoria informada",
                                         "value": {
                                             "status": "Error",
-                                            "message": "Nome (2-50 caracteres)"
-                                        }
-                                    },
-                                    "LongName": {
-                                        "summary": "Nome não pode ultrapassar 50 caracteres",
-                                        "value": {
-                                            "status": "Error",
-                                            "message": "Nome (2-50 caracteres)"
-                                        }
-                                    },
-                                    "ShortPassword": {
-                                        "summary": "Senha precisa ter ao menos 6 caracteres",
-                                        "value": {
-                                            "status": "Error",
-                                            "message": "Senha (6-12 caracteres)"
-                                        }
-                                    },
-                                    "LongPassword": {
-                                        "summary": "Senha não pode ultrapassar 12 caracteres",
-                                        "value": {
-                                            "status": "Error",
-                                            "message": "Senha (6-12 caracteres)"
-                                        }
-                                    },
-                                    "ShortEmail": {
-                                        "summary": "E-mail precisa ter ao menos 8 caracteres",
-                                        "value": {
-                                            "status": "Error",
-                                            "message": "E-mail inválido (8-254 caracteres)"
-                                        }
-                                    },
-                                    "LongEmail": {
-                                        "summary": "E-mail não pode ultrapassar 254 caracteres",
-                                        "value": {
-                                            "status": "Error",
-                                            "message": "E-mail inválido (8-254 caracteres)"
-                                        }
-                                    },
-                                    "RequiredField": {
-                                        "summary": "Preenchimento dos campos é obrigatório",
-                                        "value": {
-                                            "status": "Error",
-                                            "message": "Required"
+                                            "message": "A inclusão de uma categoria é obrigatória para a criação de uma nota de filme."
                                         }
                                     }
                                 }
                             }
-                        }
-                    },
-                    "/users/avatar": {
-                        "patch": {
-                            "summary": "Atualiza o avatar do usuário",
-                            "description": "Envia um arquivo com extensão jpeg, jpg, png ou gif para atualizar o avatar do usuário",
-                            "tags": [
-                                "Users"
-                            ],
-                            "security": [
-                                {
-                                    "bearerAuth": []
-                                }
-                            ],
-                            "requestBody": {
-                                "content": {
-                                    "multipart/form-data": {
-                                        "schema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "avatar": {
-                                                    "type": "string",
-                                                    "format": "binary",
-                                                    "description": "Arquivo do avatar do usuário"
-                                                }
-                                            },
-                                            "required": [
-                                                "avatar"
-                                            ]
-                                        }
-                                    }
-                                }
-                            },
-                            "responses": {
-                                "200": {
-                                    "description": "Ok",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "type": "object",
-                                                "$ref": "#/components/schemas/FullUserDataResponse"
-                                            }
-                                        }
-                                    }
-                                },
-                                "400": {
-                                    "description": "Apenas imagens com extensão jpeg, jpg, png ou gif são permitidas."
-                                },
-                                "401": {
-                                    "description": "Não autorizado",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "$ref": "#/components/schemas/Error"
-                                            },
-                                            "examples": {
-                                                "Unauthorized": {
-                                                    "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token inválido"
-                                                    }
-                                                },
-                                                "InvalidToken": {
-                                                    "summary": "O formato do token de autenticação se encontra inválido",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token inválido"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "/sessions": {
-                        "post": {
-                            "summary": "Cria uma sessão para o usuário",
-                            "description": "Gera um token para um usuário já cadastrado com tempo de expiração de 1 dia e com a chave secreta, que é usada para verificar e assinar o token, garantindo autenticidade da sessão do usuário na aplicação. Para gerar esse token é necessário que o usuário envie no corpo da requisição os dados de email e password.",
-                            "tags": [
-                                "Sessions"
-                            ],
-                            "requestBody": {
-                                "required": true,
-                                "content": {
-                                    "application/json": {
-                                        "schema": {
-                                            "$ref": "#/components/schemas/UserLogin"
-                                        },
-                                        "examples": {
-                                            "user": {
-                                                "value": {
-                                                    "email": "arthur@email.com",
-                                                    "password": "123456"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "responses": {
-                                "401": {
-                                    "description": "E-mail e/ou senha incorreta"
-                                },
-                                "200": {
-                                    "description": "Ok",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "type": "object",
-                                                "$ref": "#/components/schemas/LoggedUser"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "/movie_notes": {
-                        "post": {
-                            "summary": "Cria anotações relacionadas ao filme feitas por um usuário autenticado",
-                            "description": "Cria anotações relacionadas ao filme a partir da validação de seu título, descrição, classifição e tags (categorias) relacionadas a ele armazenando a anotação no banco de dados na tabela movie_notes, além de também associar tags informadas à anotação na tabela movie_tags.",
-                            "tags": [
-                                "Movie_notes"
-                            ],
-                            "security": [
-                                {
-                                    "bearerAuth": []
-                                }
-                            ],
-                            "requestBody": {
-                                "required": true,
-                                "content": {
-                                    "application/json": {
-                                        "schema": {
-                                            "$ref": "#/components/schemas/MovieNoteRegister"
-                                        },
-                                        "examples": {
-                                            "movie_note": {
-                                                "value": {
-                                                    "title": "Sharknado",
-                                                    "description": "Os sobreviventes do primeiro tornado de tubarões são obrigados a se reunir mais uma vez para combater uma nova tempestade de tubarões, que dessa vez ameaça Nova York.",
-                                                    "rating": 5,
-                                                    "tags": [
-                                                        "Terror",
-                                                        "Ação",
-                                                        "Comédia"
-                                                    ]
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "responses": {
-                                "201": {
-                                    "description": "Ok"
-                                },
-                                "401": {
-                                    "description": "Não autorizado",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "$ref": "#/components/schemas/Error"
-                                            },
-                                            "examples": {
-                                                "Unauthorized": {
-                                                    "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token não informado"
-                                                    }
-                                                },
-                                                "InvalidToken": {
-                                                    "summary": "O formato do token de autenticação se encontra inválido",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token inválido"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                                "400": {
-                                    "description": "Dados inválidos",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "$ref": "#/components/schemas/Error"
-                                            },
-                                            "examples": {
-                                                "ShortTitle": {
-                                                    "summary": "O título do filme precisa ter ao menos 2 caracteres",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "Título (2-255)"
-                                                    }
-                                                },
-                                                "LongTitle": {
-                                                    "summary": "O título do filme não pode ultrapassar 255 caracteres",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "Título (2-255)"
-                                                    }
-                                                },
-                                                "LongDescription": {
-                                                    "summary": "Descrição do filme não pode exceder 1500 caracteres",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "Descrição do filme não pode exceder 1500 caracteres"
-                                                    }
-                                                },
-                                                "InvalidRating": {
-                                                    "summary": "Avaliação do filme inválida",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "Avaliação do filme deve ser entre 1 e 5"
-                                                    }
-                                                },
-                                                "InvalidTag": {
-                                                    "summary": "Tag precisa ter ao menos 1 categoria informada",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "A inclusão de uma categoria é obrigatória para a criação de uma nota de filme."
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "get": {
-                            "summary": "Lista as notas sobre os filmes com filtros no título e tags",
-                            "description": "Lista notas com filtros a partir do título e das tags passadas na URL como parâmetros, chamados de parâmetros de consulta (Query Params).",
-                            "tags": [
-                                "Movie_notes"
-                            ],
-                            "security": [
-                                {
-                                    "bearerAuth": []
-                                }
-                            ],
-                            "parameters": [
-                                {
-                                    "name": "title",
-                                    "in": "query",
-                                    "description": "Título do filme para busca",
-                                    "required": true,
-                                    "schema": {
-                                        "type": "string"
-                                    }
-                                },
-                                {
-                                    "name": "tags",
-                                    "in": "query",
-                                    "description": "Categoria do filme para busca",
-                                    "schema": {
-                                        "type": "string"
-                                    }
-                                }
-                            ],
-                            "responses": {
-                                "200": {
-                                    "description": "Ok",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "type": "object",
-                                                "$ref": "#/components/schemas/MovieNoteWithTags"
-                                            }
-                                        }
-                                    }
-                                },
-                                "401": {
-                                    "description": "Não autorizado",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "$ref": "#/components/schemas/Error"
-                                            },
-                                            "examples": {
-                                                "Unauthorized": {
-                                                    "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token não informado"
-                                                    }
-                                                },
-                                                "InvalidToken": {
-                                                    "summary": "O formato do token de autenticação se encontra inválido",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token inválido"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "/movie_notes/{id}": {
-                        "get": {
-                            "summary": "Retorna dados das anotações de filmes pelo identificador",
-                            "description": "Recupera anotações específicas pelo identificador da anotação do filme passado por parâmetro (Route Params). A requisição vai retornar a nota do filme (título, descrição, classificação e as categorias criadas) se for bem sucedida.",
-                            "tags": [
-                                "Movie_notes"
-                            ],
-                            "security": [
-                                {
-                                    "bearerAuth": []
-                                }
-                            ],
-                            "parameters": [
-                                {
-                                    "name": "id",
-                                    "in": "path",
-                                    "description": "Identificador da nota do filme para busca",
-                                    "required": true,
-                                    "schema": {
-                                        "type": "integer"
-                                    }
-                                }
-                            ],
-                            "responses": {
-                                "200": {
-                                    "description": "Ok",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "type": "object",
-                                                "$ref": "#/components/schemas/MovieNoteWithTags"
-                                            }
-                                        }
-                                    }
-                                },
-                                "401": {
-                                    "description": "Não autorizado",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "$ref": "#/components/schemas/Error"
-                                            },
-                                            "examples": {
-                                                "Unauthorized": {
-                                                    "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token não informado"
-                                                    }
-                                                },
-                                                "InvalidToken": {
-                                                    "summary": "O formato do token de autenticação se encontra inválido",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token inválido"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "delete": {
-                            "summary": "Deleta a nota do filme a partir do seu identificador",
-                            "description": "A requisição de delete vai apagar a nota do filme a partir do ID passado no parâmetro da rota, deletando também em cascata o que for vinculado a esse ID na tabela movie_tags",
-                            "tags": [
-                                "Movie_notes"
-                            ],
-                            "security": [
-                                {
-                                    "bearerAuth": []
-                                }
-                            ],
-                            "parameters": [
-                                {
-                                    "name": "id",
-                                    "in": "path",
-                                    "description": "Identificador da nota do filme para exclusão",
-                                    "required": true,
-                                    "schema": {
-                                        "type": "integer"
-                                    }
-                                }
-                            ],
-                            "responses": {
-                                "200": {
-                                    "description": "Ok"
-                                },
-                                "401": {
-                                    "description": "Não autorizado",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "$ref": "#/components/schemas/Error"
-                                            },
-                                            "examples": {
-                                                "Unauthorized": {
-                                                    "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token não informado"
-                                                    }
-                                                },
-                                                "InvalidToken": {
-                                                    "summary": "O formato do token de autenticação se encontra inválido",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token inválido"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "/movie_tags": {
-                        "get": {
-                            "summary": "Retorna as tags (categorias de filmes) vinculadas ao usuário autenticado",
-                            "description": "Recupera as tags vinculadas ao usuário com sessão realizada que fez a solicitação",
-                            "tags": [
-                                "Movie_tags"
-                            ],
-                            "security": [
-                                {
-                                    "bearerAuth": []
-                                }
-                            ],
-                            "responses": {
-                                "200": {
-                                    "description": "Ok",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "$ref": "#/components/schemas/MovieTags"
-                                            }
-                                        }
-                                    }
-                                },
-                                "401": {
-                                    "description": "Não autorizado",
-                                    "content": {
-                                        "application/json": {
-                                            "schema": {
-                                                "$ref": "#/components/schemas/Error"
-                                            },
-                                            "examples": {
-                                                "Unauthorized": {
-                                                    "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token inválido"
-                                                    }
-                                                },
-                                                "InvalidToken": {
-                                                    "summary": "O formato do token de autenticação se encontra inválido",
-                                                    "value": {
-                                                        "status": "Error",
-                                                        "message": "JWT Token inválido"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "/files/{image}": {
-                        "get": {
-                            "summary": "Retorna a foto do avatar do usuário salvo.",
-                            "description": "Este endpoint mostra a imagem do avatar do usuário com base no nome da imagem passada como parâmetro. Para usar esta funcionalidade corretamente:\n\n1. Atualize a foto do seu avatar estando autenticado e guarde o valor de retorno do avatar da requisição.\n2. Use o nome da imagem retornada na requisição como parâmetro para este endpoint.\n\nPara testar esta funcionalidade, use o nome da imagem de teste: `d731ac5b5c731ea323f4-teste.PNG`.",
-                            "tags": [
-                                "Files"
-                            ],
-                            "parameters": [
-                                {
-                                    "name": "image",
-                                    "in": "path",
-                                    "description": "Nome da imagem do avatar do usuário que foi salva.",
-                                    "required": true,
-                                    "schema": {
-                                        "type": "string"
-                                    }
-                                }
-                            ],
-                            "responses": {
-                                "200": {
-                                    "description": "Imagem do usuário retornada com sucesso",
-                                    "content": {
-                                        "image/png": {
-                                            "schema": {
-                                                "type": "string",
-                                                "format": "binary"
-                                            }
-                                        },
-                                        "image/jpeg": {
-                                            "schema": {
-                                                "type": "string",
-                                                "format": "binary"
-                                            }
-                                        },
-                                        "image/jpg": {
-                                            "schema": {
-                                                "type": "string",
-                                                "format": "binary"
-                                            }
-                                        },
-                                        "image/gif": {
-                                            "schema": {
-                                                "type": "string",
-                                                "format": "binary"
-                                            }
-                                        }
-                                    }
-                                },
-                                "404": {
-                                    "description": "Imagem não encontrada"
-                                }
-                            }
-                        }
-                    }
-                },
-                "components": {
-                    "schemas": {
-                        "FullUserDataResponse": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "integer"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "type": "string"
-                                },
-                                "password": {
-                                    "type": "string"
-                                },
-                                "avatar": {
-                                    "type": "string"
-                                },
-                                "created_at": {
-                                    "type": "string",
-                                    "format": "date-time"
-                                },
-                                "updated_at": {
-                                    "type": "string",
-                                    "format": "date-time"
-                                }
-                            }
-                        },
-                        "UserRegister": {
-                            "type": "object",
-                            "required": [
-                                "name",
-                                "email",
-                                "password"
-                            ],
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "type": "string"
-                                },
-                                "password": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "UserLogin": {
-                            "type": "object",
-                            "required": [
-                                "email",
-                                "password"
-                            ],
-                            "properties": {
-                                "email": {
-                                    "type": "string"
-                                },
-                                "password": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "UserUpdate": {
-                            "type": "object",
-                            "required": [
-                                "name",
-                                "email"
-                            ],
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "type": "string"
-                                },
-                                "password": {
-                                    "type": "string"
-                                },
-                                "old_password": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "LoggedUser": {
-                            "type": "object",
-                            "properties": {
-                                "user": {
-                                    "$ref": "#/components/schemas/FullUserDataResponse"
-                                },
-                                "token": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "MovieNoteRegister": {
-                            "type": "object",
-                            "required": [
-                                "title",
-                                "rating",
-                                "tags"
-                            ],
-                            "properties": {
-                                "title": {
-                                    "type": "string"
-                                },
-                                "description": {
-                                    "type": "string"
-                                },
-                                "rating": {
-                                    "type": "integer"
-                                },
-                                "tags": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        },
-                        "MovieTags": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer"
-                                    },
-                                    "note_id": {
-                                        "type": "integer"
-                                    },
-                                    "user_id": {
-                                        "type": "integer"
-                                    },
-                                    "name": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        },
-                        "MovieNoteWithTags": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "integer"
-                                },
-                                "title": {
-                                    "type": "string"
-                                },
-                                "description": {
-                                    "type": "string"
-                                },
-                                "rating": {
-                                    "type": "integer"
-                                },
-                                "user_id": {
-                                    "type": "integer"
-                                },
-                                "created_at": {
-                                    "type": "string",
-                                    "format": "date-time"
-                                },
-                                "updated_at": {
-                                    "type": "string",
-                                    "format": "date-time"
-                                },
-                                "movie_tags": {
-                                    "$ref": "#/components/schemas/MovieTags"
-                                }
-                            }
-                        },
-                        "Error": {
-                            "type": "object",
-                            "properties": {
-                                "status": {
-                                    "type": "string"
-                                },
-                                "message": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "securitySchemes": {
-                        "bearerAuth": {
-                            "type": "http",
-                            "scheme": "bearer",
-                            "bearerFormat": "JWT"
                         }
                     }
                 }
+            },
+            "get": {
+                "summary": "Lista as notas sobre os filmes com filtros no título e tags",
+                "description": "Lista notas com filtros a partir do título e das tags passadas na URL como parâmetros, chamados de parâmetros de consulta (Query Params).",
+                "tags": [
+                    "Movie_notes"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Título do filme para busca",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tags",
+                        "in": "query",
+                        "description": "Categoria do filme para busca",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MovieNoteWithTags"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token não informado"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "O formato do token de autenticação se encontra inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/movie_notes/{id}": {
+            "get": {
+                "summary": "Retorna dados das anotações de filmes pelo identificador",
+                "description": "Recupera anotações específicas pelo identificador da anotação do filme passado por parâmetro (Route Params). A requisição vai retornar a nota do filme (título, descrição, classificação e as categorias criadas) se for bem sucedida.",
+                "tags": [
+                    "Movie_notes"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Identificador da nota do filme para busca",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MovieNoteWithTags"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token não informado"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "O formato do token de autenticação se encontra inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Deleta a nota do filme a partir do seu identificador",
+                "description": "A requisição de delete vai apagar a nota do filme a partir do ID passado no parâmetro da rota, deletando também em cascata o que for vinculado a esse ID na tabela movie_tags",
+                "tags": [
+                    "Movie_notes"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Identificador da nota do filme para exclusão",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "401": {
+                        "description": "Não autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token não informado"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "O formato do token de autenticação se encontra inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/movie_tags": {
+            "get": {
+                "summary": "Retorna as tags (categorias de filmes) vinculadas ao usuário autenticado",
+                "description": "Recupera as tags vinculadas ao usuário com sessão realizada que fez a solicitação",
+                "tags": [
+                    "Movie_tags"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MovieTags"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "summary": "O usuário precisa ter feito a sessão (login) para atualizar",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token inválido"
+                                        }
+                                    },
+                                    "InvalidToken": {
+                                        "summary": "O formato do token de autenticação se encontra inválido",
+                                        "value": {
+                                            "status": "Error",
+                                            "message": "JWT Token inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/files/{image}": {
+            "get": {
+                "summary": "Retorna a foto do avatar do usuário salvo.",
+                "description": "Este endpoint mostra a imagem do avatar do usuário com base no nome da imagem passada como parâmetro. Para usar esta funcionalidade corretamente:\n\n1. Atualize a foto do seu avatar estando autenticado e guarde o valor de retorno do avatar da requisição.\n2. Use o nome da imagem retornada na requisição como parâmetro para este endpoint.\n\nPara testar esta funcionalidade, use o nome da imagem de teste: `d731ac5b5c731ea323f4-teste.PNG`.",
+                "tags": [
+                    "Files"
+                ],
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "Nome da imagem do avatar do usuário que foi salva.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Imagem do usuário retornada com sucesso",
+                        "content": {
+                            "image/png": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "image/jpeg": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "image/jpg": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "image/gif": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Imagem não encontrada"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "FullUserDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "UserRegister": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserLogin": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserUpdate": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "old_password"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "old_password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "LoggedUser": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/FullUserDataResponse"
+                    },
+                    "token": {
+                        "type": "string"
+                    }
+                }
+            },
+            "MovieNoteRegister": {
+                "type": "object",
+                "required": [
+                    "title",
+                    "rating",
+                    "tags"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "rating": {
+                        "type": "integer"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "MovieTags": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer"
+                        },
+                        "note_id": {
+                            "type": "integer"
+                        },
+                        "user_id": {
+                            "type": "integer"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "MovieNoteWithTags": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "rating": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "movie_tags": {
+                        "$ref": "#/components/schemas/MovieTags"
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     }
