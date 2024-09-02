@@ -3,7 +3,7 @@ const AppError = require("../utils/AppError");
 const knex = require("../database/knex");
 const z = require("zod");
 
-export const CreateUserPayload = z.object({
+const CreateUserPayload = z.object({
   email: z
     .string()
     .email("O formato do e-mail é inválido")
