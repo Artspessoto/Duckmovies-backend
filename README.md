@@ -39,7 +39,7 @@ run `tsc --init` to create a `tsconfig.json` file
 
 **Banco de dados:**
 * Knex.js
-* SQLite
+* PostgreSQL
 
 **Segurança:**
 * bcrypt
